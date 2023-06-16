@@ -24,59 +24,143 @@
 
 \begin{document}
 \begin{titlepage}
-% \begin{figure} 
-% \includegraphics[width=0.3\textwidth]{images/cnrslogo.jpeg}
-% \includegraphics[width=0.3\textwidth]{images/inria.png}
-%     \centering
-% \end{figure}
+\begin{figure} 
+\includegraphics[width=0.4\textwidth]{images/cnrslogo.jpeg}
+\includegraphics[width=0.4\textwidth]{images/inria.png}
+    \centering
+\end{figure}
 
 \centering
 \title{}\author{}\date{}
 \centering
-\vspace{5cm}
-{\bfseries\LARGE CNRS Alsace delegation\par}
 \vspace{3cm}
-{\scshape\Large IRMA \par}
-\vspace{2cm}
+{\bfseries\LARGE CNRS Alsace delegation - INRIA \par}
+\vspace{4cm}
 {\bfseries\LARGE Training augmented interpolation \par}
 \vspace{1cm}
 {\Large FONSECA HINCAPIÉ Diana Sol Angel\par}
 \vspace{1cm}
-{\Large M1 CSMI \par}
-\vspace{2cm}
+{\Large STAGE M1 CSMI \par}
+\vspace{3cm}
 {\Large Supervisor: \par}
 \vspace{0.5cm}
 {\Large M.FRANCK Emmanuel\par}
+\vspace{0.5cm}
+{\Large M.NAVORET Laurent\par}
 \end{titlepage}
 
 
 %Table of contents
 \maketitle
-\tableofcontents
+\tableofcontents 
 \newpage
-\pagebreak
+
+
 
 
 
 
 \section{Introduction}
 
+\section{Objectives}
+The main objective of this internship was to 
+
 
 \section{Theoretical Framework}
 
 
-\section{Code description}
+\subsection{Augmented Interpolation}
+
+\subsubsection{Deep Lagrange Interpolation}
+
+\begin{equation*}
+
+    \mathcal{I}_d^m(f)=\sum_{i=1}^n \frac{f\left(x_i\right)}{u_{\theta_i}\left(x_i\right)} P_i(x) u_{\theta_i}(x)
+\end{equation*}
+with $P_i\left(x_j\right)=\delta_{i j}$
+Using this choice, we obtain that $\mathcal{I}_d(f)\left(x_i\right)=f\left(x_i\right)$ as the classical interpolator.
+
+\subsubsection{Deep Lagrange interpolation with PINNs}
+
+We will consider a specific case of the deep interpolation.
+$$
+\mathcal{I}_d^m(f)=\sum_{i=1}^n \frac{f\left(x_i\right)}{u_\theta\left(x_i\right)} P_i(x) u_\theta(x)=\mathcal{I}^m\left(\frac{f}{u_\theta}\right) u_\theta(x)
+$$
+This interpolation will be better than the classical one if $\frac{f}{u_\theta} \approx=1$ since we have the following error on the interpolation:
+$$
+\left\|f-\mathcal{I}_d^m(f)\right\|_{H^m} \leq C h^{m+1}\left\|\left(\frac{f}{u_\theta}\right)^{\prime \prime}\right\|_{L^2}\|f\|_{H^m}
+$$
+
+Now we the question is how choose $u_\theta(x)$. We propose to use a neural network which will approximate the solution of the PDE:
+$$
+u_\theta\left(x ; t, \mu, a(x), a^{\prime}(x)\right)
+$$
+We will train these neural networks with a P \textit{Physics Informed Neural Network} strategy and we will use the previous interpolation to approximate the solution of the PDE.
+
+% \subsection{Supervised and unsupervised learning}
+
+\subsection{Physics Informed Neural Networks}
+
+Physics Informed Neural Networks (PINNs) are neural networks that encode model equations, like Partial Differential Equations (PDE), as a component of the neural network itself. PINNs are nowadays used to solve PDEs. This novel methodology has arisen as a multi-task learning framework in which a NN must fit observed data while reducing a PDE residual. 
+Deep neural networks are increasingly being used to tackle classical applied mathematics problems such as partial differential equations (PDEs) utilizing machine learning and artificial intelligence approaches. Due to, for example, significant nonlinearities, convection dominance, 
+
+
+PINNs are a scientific machine learning technique used to solve problems involving Partial Differential Equations (PDEs). PINNs approximate PDE solutions by training a neural network to minimize a loss function; it includes terms reflecting the initial and boundary conditions along the space-time domain’s boundary and the PDE residual at selected points in the domain (called collocation point). PINNs are deep- learning networks that, given an input point in the integration domain, produce an estimated solution in that point of a differential equation after training. Incorporating a residual network that encodes the governing physics equations is a significant novelty with PINNs. The basic concept behind PINN training is that it can be thought of as an unsupervised strategy that does not require labelled data, such as results from prior simulations or experiments.
+It works by integrating the mathematical model into the network and reinforcing the loss function with a residual term from the governing equation, which acts as a penalizing term to restrict the space of acceptable solutions.
+
+PINNS can be viewed as an unsupervised learning approach when they are trained solely using physical equations and boundary conditions for forward problems; 
+
+
+\subsubsection{Architecture of PINNs}
+
+\subsubsection{Training PINNs}
+
+\subsubsection{Feed-forward Neural Network}
+
+% \subsubsection{Loss Function}
+\subsubsection{Error Estimation}
+
+
+\subsubsection{PINNs for solving PDEs} 
+
+
+In this project we were particularly interested in approximate the $u\theta$ function, which is the solution of the following PDE:
+
+\begin{equation*}
+    \begin{cases}
+    \frac{\partial u}{\partial t} + a \frac{\partial u\theta}{\partial x} = 0 \quad (x,t) \in \Omega \times (0,T] \\
+    u\theta(x,t=0) = u_0(x) \quad x \in \delta \Omega \\
+    \end{cases}
+\end{equation*}
+
+Where $a$ is a constant that represents the velocity of the wave. 
+
+%25
+%describir el proceso de como se utilizan las redes d eneuronas para poder resolver especialmente esta ecuacion diferencial parcial
+
+\section{Implementation}
 
 
 \section{Results}
+\subsection{Finding $u\theta$ using PINNs}
 
 
-\section{Conclusion}
+\subsubsection{Unsupervised learning}
+
+
+\subsubsection{Supervised learning}
+
+
+\subsection{Solving using deep interpolation}
+
+
+
+\section{Conclusions}
 
 
 \section{Bibliography}
-
-
-
+\bibitem[label]{1} {Scientific Machine Learning Through Physics–Informed Neural Networks: Where we are and What’s Next}
+Salvatore Cuomo1 · Vincenzo Schiano Di Cola2 · Fabio Giampaolo1 · Gianluigi Rozza3 · Maziar Raissi4 · Francesco Piccialli1
+26 July 2022
 
 \end{document}
