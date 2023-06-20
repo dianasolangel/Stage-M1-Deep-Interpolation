@@ -196,11 +196,32 @@ Where $a$ is a constant that represents the velocity.
 %y como se puede utilizar para poder encontrar la solucion de la ecuacion diferencial parcial
 We will train a neural network to approximate the solution of the PDE, we can do this by minimizing the error of the PDE in a certain number of points inside our domain.
 
-We are going to represent our neural network by $overline{u_\theta}$  
+We are going to represent our neural network by $overline{u_\theta}$ then we define our initial condition as $u_0$ and our boundary condition as $u_b$ then we define our $u\theta$ as follows:
+$$
+u\theta(x,t) = u_0 + b_c * \overline{u_\theta}(x,t) + x(1-x)tN(x,t)
+$$
+We assume then that:
+$$\overline{u_\theta}(x,t)\approx u(x,t,\theta)$$ 
+Where $\theta$ is the set of parameters of our neural network, we look to minize $\theta$ in order to minimize the error of our neural network.
 
+To define our loss function we will evaluate our PDE in a certain number of points inside our domain, we will call this points collocation points, we will define our loss function as follows:
 
+$$MSE_{u_\theta}=\frac{1}{N_{coll}}\sum^{N_{coll}}_{i=1}|u_\theta(t_{coll}^i,x_{coll}^i)|^2$$
+
+Since we know the outcome because we already know the exact solution of our equation, we select $N_u$ points from our BC and IC and used them to train our network.
+
+$$MSE_{u_{exact}}=\frac{1}{N_{u_{exact}}}\sum^{N_{u_{exact}}}_{i=1}|y(t_{u_{exact}}^i,x_{u_{exact}}^i)-\overline{u_\theta}(t_{u_{exact}}^i,x_{u_{exact}}^i)|^2$$
+
+We want to minimize the error of our neural network, so we want to minimize $\theta$:
+
+$$
+\Theta* = argmin_\Theta \left\{ \frac{1}{N_{coll}}\sum^{N_{coll}}_{i=1}|u_\theta(t_{coll}^i,x_{coll}^i)|^2 + \frac{1}{N_{u_{exact}}}\sum^{N_{u_{exact}}}_{i=1}|y(t_{u_{exact}}^i,x_{u_{exact}}^i)-\overline{u_\theta}(t_{u_{exact}}^i,x_{u_{exact}}^i)|^2 \right\}
+$$
+
+where $u$ is the exact solution.
 
 \section{Implementation}
+
 %Description of the code implementation with some code snippets and explanations of the most important parts of the code.
 
 
@@ -220,6 +241,7 @@ We are going to represent our neural network by $overline{u_\theta}$
 
 \section{Conclusions}
 
+\newpage
 
 \section{Bibliography}
 \bibitem[label]{1} {Scientific Machine Learning Through Physics–Informed Neural Networks: Where we are and What’s Next}
