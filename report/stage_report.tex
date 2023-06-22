@@ -61,13 +61,15 @@
 
 
 \section{Introduction}
+%Say something about like the importance of the transport equation and the need to solve it numerically and the use of neural networks 
 
 \section{Objectives}
-The main objective of this internship was to 
 
+We are interested in solving the resolution of simple transport equations, the aim is to find a way to increase the accuracy of the method using deep learning techniques while keeping the guarantees of convergence.
+For this we consider a simple case of deep interpolation where we approximate the solution of our transport equation by training a physics informed neural network.
+We used a machine learning framework like PyTorch to implement PINNs
 
 \section{Theoretical Framework}
-
 
 \subsection{Augmented Interpolation}
 
@@ -144,6 +146,8 @@ PINN can be viewed as an unsupervised learning approach when they are trained so
     \caption{PINNs}
 \end{figure}
 
+$PINNs​ = ​Data​ + ​Neural​Networks​ + ​Physical​Laws$
+
 \subsubsection{Architecture of PINNs}
 
 PINN are composed of three components: a neural network, a physics-informed network, and a feedback mechanism. The first block is a NN, $u_θ$,
@@ -167,10 +171,13 @@ The universal approximation theorem states that any continuous function  $$f : [
 Even if neural networks can express very complex functions compactly, determining the precise parameters (weights and biases) required to solve a specific PDE can be difficult.
 
 
-
 % \subsubsection{Training PINNs} AUN NO SEGURO  SI poner esta parte 
-\subsubsection{Feed-forward Neural Network}
+\subsubsection{Feed-forward Neural Network (FFNN)}
 
+A Feed Forward Neural Network is an artificial neural network in which the connections between nodes does not form a cycle. 
+The opposite of a feed forward neural network is a recurrent neural network, in which certain pathways are cycled. 
+The feed forward model is the simplest form of neural network as information is only processed in one direction. While the data may pass through multiple hidden nodes, 
+it always moves in one direction and never backwards. In this projetc we will be implementing a FFNN for the PINN.
 
 % \subsubsection{Loss Function}
 \subsubsection{Error Estimation}
@@ -182,12 +189,15 @@ Even if neural networks can express very complex functions compactly, determinin
 
 In this project we were particularly interested in approximate the $u\theta$ function, which is the solution of the following PDE:
 
+\textbf{Advection Equation}
 \begin{equation*}
     \begin{cases}
     \frac{\partial u}{\partial t} + a \frac{\partial u\theta}{\partial x} = 0 \quad (x,t) \in \Omega \times (0,T] \\
     u\theta(x,t=0) = u_0(x) \quad x \in \delta \Omega \\
     \end{cases}
 \end{equation*}
+
+Which represents a wave propagating with a constant velocity with an unchanged shape.
 
 Where $a$ is a constant that represents the velocity.
 
@@ -221,7 +231,8 @@ $$
 where $u$ is the exact solution.
 
 \section{Implementation}
-
+We implement a Phyton code to approximate the solution of the PDE using PINNs,for this we will be using the library PyTorch for machine learning.
+%The aim is to achieve a trained multilayer perceptron (MLP) that can give the output φ(x, t), where x and t are set as inputs that satisfy Eq. (1). The basic principle is that a forward transfer on the network using the independent variables as PINNs inputs gives one the evaluated depen- dent variables. Since PINNs are derivable, we can compute the depen- dent variables (outputs). The dependent variables (inputs) to calculate the different derivatives that appear in the original PDEs. We create a loss function that fits the PDEs with this derivative throughout the training phase. We will assume that our PINNs solve the PDEs if the loss function approaches a near-zero value. The teaching is done in an un- supervised setting. Thus, there are continuous and derivable solutions that can be applied throughout the whole domain. PINNs also have the advantage of allowing one to use the PDEs-free parameters in the solu- tion. Therefore, a solution trained for various values of these parameters will generalize to different conditions rather than a single scenario, eliminating the need for new calculations any time a parameter is modified. 
 %Description of the code implementation with some code snippets and explanations of the most important parts of the code.
 
 
@@ -249,4 +260,6 @@ Salvatore Cuomo1 · Vincenzo Schiano Di Cola2 · Fabio Giampaolo1 · Gianluigi R
 26 July 2022
 \bibitem[label]{2} {Supervised vs. Unsupervised Learning: What’s the Difference?} {https://www.ibm.com/cloud/blog/supervised-vs-unsupervised-learning}
 \bibiitem[label]{3} {What are neural networks?} {https://www.ibm.com/topics/neural-networks}
+
+\bibiitem[label]{4} {Feed Forward Neural Network} {https://deepai.org/machine-learning-glossary-and-terms/feed-forward-neural-network}
 \end{document}
