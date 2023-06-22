@@ -179,6 +179,31 @@ The opposite of a feed forward neural network is a recurrent neural network, in 
 The feed forward model is the simplest form of neural network as information is only processed in one direction. While the data may pass through multiple hidden nodes, 
 it always moves in one direction and never backwards. In this projetc we will be implementing a FFNN for the PINN.
 
+\subsubsection{Multi Layer Perceptron (MLP)}
+A Multilayer Perceptron has input and output layers, and one or more hidden layers with many neurons stacked together. And while in the Perceptron the neuron must have an activation function that imposes a threshold, like ReLU or sigmoid, neurons in a Multilayer Perceptron can use any arbitrary activation function.
+Multilayer Perceptron falls under the category of feedforward algorithms, because inputs are combined with the initial weights in a weighted sum and subjected to the activation function, just like in the Perceptron. But the difference is that each linear combination is propagated to the next layer.
+Each layer is feeding the next one with the result of their computation, their internal representation of the data. This goes all the way through the hidden layers to the output layer.
+But it has more to it.
+If the algorithm only computed the weighted sums in each neuron, propagated results to the output layer, and stopped there, it wouldn’t be able to learn the weights that minimize the cost function. If the algorithm only computed one iteration, there would be no actual learning.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\textwidth]{images/MLP.png}
+    \caption{Multi Layer Perceptron}
+\end{figure}
+
+\subsubsection{Backpropagation}
+Backpropagation is the learning mechanism that allows the Multilayer Perceptron to iteratively adjust the weights in the network, with the goal of minimizing the cost function.
+There is one hard requirement for backpropagation to work properly. The function that combines inputs and weights in a neuron, for instance the weighted sum, and the threshold function, for instance ReLU, must be differentiable. These functions must have a bounded derivative, because Gradient Descent is typically the optimization function used in MultiLayer Perceptron.
+In each iteration, after the weighted sums are forwarded through all layers, the gradient of the Mean Squared Error is computed across all input and output pairs. Then, to propagate it back, the weights of the first hidden layer are updated with the value of the gradient. That’s how the weights are propagated back to the starting point of the neural network
+
+Then we get the following infographic that shows the whole process of a Multilayer Perceptron with feedforward and backpropagation:
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\textwidth]{images/MLP2.png}
+    \caption{Multi Layer Perceptron and Backpropagation}
+\end{figure}
+
 % \subsubsection{Loss Function}
 \subsubsection{Error Estimation}
 %explain the monte carlo approach (4:51video )
@@ -190,16 +215,14 @@ it always moves in one direction and never backwards. In this projetc we will be
 In this project we were particularly interested in approximate the $u\theta$ function, which is the solution of the following PDE:
 
 \textbf{Advection Equation}
-\begin{equation*}
+\begin{equation}
     \begin{cases}
     \frac{\partial u}{\partial t} + a \frac{\partial u\theta}{\partial x} = 0 \quad (x,t) \in \Omega \times (0,T] \\
     u\theta(x,t=0) = u_0(x) \quad x \in \delta \Omega \\
     \end{cases}
-\end{equation*}
+\end{equation}
 
-Which represents a wave propagating with a constant velocity with an unchanged shape.
-
-Where $a$ is a constant that represents the velocity.
+Which represents a wave propagating with a constant velocity $a$ with an unchanged shape.
 
 %25
 %describir el proceso de como se utilizan las redes d eneuronas para poder resolver especialmente esta ecuacion diferencial parcial
@@ -231,12 +254,31 @@ $$
 where $u$ is the exact solution.
 
 \section{Implementation}
-We implement a Phyton code to approximate the solution of the PDE using PINNs,for this we will be using the library PyTorch for machine learning.
-%The aim is to achieve a trained multilayer perceptron (MLP) that can give the output φ(x, t), where x and t are set as inputs that satisfy Eq. (1). The basic principle is that a forward transfer on the network using the independent variables as PINNs inputs gives one the evaluated depen- dent variables. Since PINNs are derivable, we can compute the depen- dent variables (outputs). The dependent variables (inputs) to calculate the different derivatives that appear in the original PDEs. We create a loss function that fits the PDEs with this derivative throughout the training phase. We will assume that our PINNs solve the PDEs if the loss function approaches a near-zero value. The teaching is done in an un- supervised setting. Thus, there are continuous and derivable solutions that can be applied throughout the whole domain. PINNs also have the advantage of allowing one to use the PDEs-free parameters in the solu- tion. Therefore, a solution trained for various values of these parameters will generalize to different conditions rather than a single scenario, eliminating the need for new calculations any time a parameter is modified. 
+
+\subsection{PINNs code}
+
+We implement a Python code to approximate the solution of the PDE using PINNs,for this we will be using the library PyTorch for machine learning.
+The aim is to achieve a trained Neural Network that can give the output $u\theta(x, t)$, where x and t are set as inputs that satisfy Eq. (1). 
+
+
+This PDE has an analytical exact solution which is $u\theta(x,t) = u_0(x,x-ut)$, where $u_0$ is the initial condition that we define $u_0(x) = \exp(-(x-0.5)^2/0.1^2)$
+
+
+The basic principle is that a forward transfer on the network using the independent variables as PINNs inputs gives one the evaluated dependent variables.
+Since PINNs are derivable, we can compute the dependent variables (outputs). The dependent variables (inputs) to calculate the different derivatives that appear in the original PDEs. We create a loss function that fits the PDEs with this derivative throughout the training phase. 
+We will assume that our PINNs solve the PDEs if the loss function approaches a near-zero value. The training can be done in both an unsupervised and supervised setting.\\
+
+We define the collocation and the data points, each of which would have a separate loss function that will be added together to form the total loss function.
+When $t = 0$, the initial condition will use a Mean Square Error (MSE) loss function, which will equate the known initial condition with the PINNs output. For the spatial boundary condition, 
+we use a periodic condition that compares the solutions using an MSE loss functionat $x=xmin$ and $x=xmax$ for any t and forces them to be equal. the same is done for the temporal boundary condition. 
+We characterize our solution as a NN with two inputs (number of independent variables), hidden layers, and one output that is defined as $\overline{u_\theta}(x,t)$, which is the approximation of the solution of the PDE given by the NN. 
+
+%Explicar por encima cada function y solo poner las mas importantes
 %Description of the code implementation with some code snippets and explanations of the most important parts of the code.
 
 
 \section{Results}
+
 \subsection{Finding $u\theta$ using PINNs}
 
 
@@ -262,4 +304,7 @@ Salvatore Cuomo1 · Vincenzo Schiano Di Cola2 · Fabio Giampaolo1 · Gianluigi R
 \bibiitem[label]{3} {What are neural networks?} {https://www.ibm.com/topics/neural-networks}
 
 \bibiitem[label]{4} {Feed Forward Neural Network} {https://deepai.org/machine-learning-glossary-and-terms/feed-forward-neural-network}
+\bibiitem[label]{5} {What is a feedforward neural network?} {https://www.ibm.com/cloud/learn/feedforward-neural-network}
+\bibiitem[label]{6} {Multilayer Perceptron Explained with a Real-Life Example and Python Code} {https://towardsdatascience.com/multilayer-perceptron-explained-with-a-real-life-example-and-python-code-sentiment-analysis-cb408ee93141}
 \end{document}
+
