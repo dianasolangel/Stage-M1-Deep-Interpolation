@@ -42,7 +42,7 @@
 \vspace{1cm}
 {\Large STAGE M1 CSMI \par}
 \vspace{3cm}
-{\Large Supervisor: \par}
+{\Large Supervisors: \par}
 \vspace{0.5cm}
 {\Large M.FRANCK Emmanuel\par}
 \vspace{0.5cm}
@@ -62,6 +62,7 @@
 
 \section{Introduction}
 %Say something about like the importance of the transport equation and the need to solve it numerically and the use of neural networks 
+
 
 \section{Objectives}
 
@@ -204,9 +205,107 @@ Then we get the following infographic that shows the whole process of a Multilay
     \caption{Multi Layer Perceptron and Backpropagation}
 \end{figure}
 
-% \subsubsection{Loss Function}
-\subsubsection{Error Estimation}
-%explain the monte carlo approach (4:51video )
+\subsection{Soft and Hard Constraints}
+
+Boundary constraints can be viewed in two ways: as penalty term (soft BC enforcement) or as part of the network design (hard BC enforcement). In many existing PINN frameworks, a soft approach is taken to enforce the BCs by introducing additional loss components defined on the border's collocation points.
+
+However, this technique has two drawbacks: it does not guarantee accurate satisfaction of the BCs, and there is no theory to guide the determination of the weights assigned to the BC loss.
+
+There is also the hard approach to address the boundary conditions by incorporating a specific component in the neural network solely dedicated to meeting the conditions. Thus, the initial boundary conditions are considered as part of the labeled data constraint.
+
+Compared to the commonly used residual-based loss functions, the variational energy-based loss function is simpler to minimize and yields better results. The loss function can be constructed using collocation points, weighted residuals derived from the Galerkin-Method, or an energy-based approach. 
+
+There are differetn approchaes for constructing the loss function there is the one including data-driven (without a physics model), PDE-based, and energy-based losses. 
+
+Comparing both the PDE-based and energy-based approaches have advantages and disadvantages. The PDE-based loss function has more hyperparameters than the energy-based loss function. The energy-based strategy is more sensitive to the size and resolution of the training samples but is less computationally intensive than the PDE-based strategy.
+
+
+\subsubsection{The Loss Function}
+Using the PINN approach we determine the parameters $\theta$ of the NN, $u_\theta$, by minimizing the loss function:
+
+$$
+\theta = argmin_\theta L(\theta)
+$$
+Where the loss function is defined as:`'
+$$
+L(\theta) = L_{data}(\theta) + L_{physics}(\theta) + L_{SBC}(\theta) + L_{TBC}(\theta)+ L_{IC}(\theta)
+$$
+
+\subsubsection*{Data Loss}
+
+The data loss is the mean squared error between the NN output and the validation of known data points, it employs the data points to train the NN, so it's a supervised learning approach.
+The NN parameters are chosen by minimizing the difference between the observed outputs and the model’s predictions for the observed inputs.
+$$
+L_{data}(\theta) = \sum_{i=1}^{N} |u_\theta(x_i,t_i) - u_{exact}(x_i,t_i)|^2
+$$
+
+\subsubsection*{Residual Loss}
+
+The residual loss is the mean squared error between the NN output and the PDE residual. The PDE residual is the left-hand side of the PDE, which is computed using the automatic differentiation of the NN.
+It represents the loss produced by the mismatch with the governing physics laws defined by the PDE, it enforce the NN to satisfy the PDE at the collocation points, which can be chosen uniformly or unevenly over the domain
+$$
+L_{physics}(\theta) = \sum_{i=1}^{N} |u_\theta(x_i,t_i) - u_{pde}(x_i,t_i)|^2
+$$
+
+\subsubsection*{Periodic Boundary Conditions and Initial Condition Loss}
+
+Periodic boundary conditions in the space domain are defined as it follows:
+
+$$
+L_{SBC} = \sum_{i=1}^{N} |u_\theta(x_{min},t_i) - u_\theta(x_{max},t_i)|^2
+$$
+\\
+Periodic boundary conditions in the time domain are defined as it follows:
+
+$$
+L_{TBC} = \sum_{i=1}^{N} |u_\theta(x_i,t_{min}) - u_\theta(x_i,t_{max})|^2
+$$
+\\
+And finally, the initial condition is defined as it follows:
+
+$$
+L_{IC} = \sum_{i=1}^{N} |u_\theta(x_i,t_{min}) - u_{0}(x_i)|^2
+$$
+\\
+Where $u_0$ is the initial condition function.\\
+
+The loss function is minimized using the Adam optimizer, which is an extension to stochastic gradient descent that has recently seen broader adoption for deep learning applications in computer vision and natural language processing.\\
+
+Then, according to the Monte Carlo approach, we can approximate the error of our neural network by evaluating the PDE in a certain number of points inside our domain, we will call this points collocation points, we will define our loss function as follows:
+
+$$
+ L_{physics}(\theta) = MSE_{u_\theta}=\frac{1}{N_{coll}}\sum^{N_{coll}}_{i=1}|u_\theta(t_{coll}^i,x_{coll}^i)|^2
+$$
+
+Since we know the outcome because we already know the exact solution of our equation, we select $N_u$ points from our BC and IC and used them to train our network.
+
+$$MSE_{u_{exact}}=\frac{1}{N_{u_{exact}}}\sum^{N_{u_{exact}}}_{i=1}|u(t_{u_{exact}}^i,x_{u_{exact}}^i)-\overline{u_\theta}(t_{u_{exact}}^i,x_{u_{exact}}^i)|^2$$
+\\
+We want to minimize the error of our neural network, so we want to minimize $\theta$, so that we have:
+\\
+
+$$
+\Theta* = argmin_\Theta \left\{ \frac{1}{N_{coll}}\sum^{N_{coll}}_{i=1}|u_\theta(t_{coll}^i,x_{coll}^i)|^2 + \frac{1}{N_{u_{exact}}}\sum^{N_{u_{exact}}}_{i=1}|u(t_{u_{exact}}^i,x_{u_{exact}}^i)-\overline{u_\theta}(t_{u_{exact}}^i,x_{u_{exact}}^i)|^2 \right\}
+$$
+\\
+
+where $u$ is the exact solution.
+\\
+
+The physics constraints are included in the loss function to enforce model training, which can accurately reflect latent system nonlinearity even when training data points are scarce.\\
+
+
+When solving PDEs using a numerical discretization technique, we are
+interested in the numerical method’s stability, consistency, and convergence properties.\\
+
+%the convergence and stability are related to how well the NN learns from physical laws and data.
+\subsubsection{Convergence analysis}
+
+
+
+\subsubsection{Error analysis}
+
+
 
 
 \subsubsection{PINNs for solving PDEs} 
@@ -217,8 +316,8 @@ In this project we were particularly interested in approximate the $u\theta$ fun
 \textbf{Advection Equation}
 \begin{equation}
     \begin{cases}
-    \frac{\partial u}{\partial t} + a \frac{\partial u\theta}{\partial x} = 0 \quad (x,t) \in \Omega \times (0,T] \\
-    u\theta(x,t=0) = u_0(x) \quad x \in \delta \Omega \\
+    \frac{\partial u}{\partial t} + a \frac{\partial u}{\partial x} = 0 \quad (x,t) \in \Omega \times (0,T] \\
+     u(x,t=0) = u_0(x) \quad x \in \delta \Omega \\
     \end{cases}
 \end{equation}
 
@@ -229,29 +328,21 @@ Which represents a wave propagating with a constant velocity $a$ with an unchang
 %y como se puede utilizar para poder encontrar la solucion de la ecuacion diferencial parcial
 We will train a neural network to approximate the solution of the PDE, we can do this by minimizing the error of the PDE in a certain number of points inside our domain.
 
-We are going to represent our neural network by $overline{u_\theta}$ then we define our initial condition as $u_0$ and our boundary condition as $u_b$ then we define our $u\theta$ as follows:
+We are going to represent our neural network by $\overline{u_\theta}$ then we define our initial condition as $u_0$ and our boundary condition as $u_b$ then we define our $u\theta$ as follows:
+
 $$
-u\theta(x,t) = u_0 + b_c * \overline{u_\theta}(x,t) + x(1-x)tN(x,t)
+u\theta(x,t) = u_0 + b_c * \overline{u_\theta}(x,t)
 $$
+
 We assume then that:
 $$\overline{u_\theta}(x,t)\approx u(x,t,\theta)$$ 
-Where $\theta$ is the set of parameters of our neural network, we look to minize $\theta$ in order to minimize the error of our neural network.
+Where $\theta$ is the set of parameters we want to optimize in order to minimize the error of the solution given by our neural network.
+It may seem strange to define the partial derivative of a neural network, but since the neural network's activation function is smooth and differentiable, and we can derive it using automatic differentiation for any values of $x$ and $t$.
 
-To define our loss function we will evaluate our PDE in a certain number of points inside our domain, we will call this points collocation points, we will define our loss function as follows:
+%No se si esta bien 
+We look to minize $\theta$ in order to minimize the error of our neural network.
 
-$$MSE_{u_\theta}=\frac{1}{N_{coll}}\sum^{N_{coll}}_{i=1}|u_\theta(t_{coll}^i,x_{coll}^i)|^2$$
 
-Since we know the outcome because we already know the exact solution of our equation, we select $N_u$ points from our BC and IC and used them to train our network.
-
-$$MSE_{u_{exact}}=\frac{1}{N_{u_{exact}}}\sum^{N_{u_{exact}}}_{i=1}|y(t_{u_{exact}}^i,x_{u_{exact}}^i)-\overline{u_\theta}(t_{u_{exact}}^i,x_{u_{exact}}^i)|^2$$
-
-We want to minimize the error of our neural network, so we want to minimize $\theta$:
-
-$$
-\Theta* = argmin_\Theta \left\{ \frac{1}{N_{coll}}\sum^{N_{coll}}_{i=1}|u_\theta(t_{coll}^i,x_{coll}^i)|^2 + \frac{1}{N_{u_{exact}}}\sum^{N_{u_{exact}}}_{i=1}|y(t_{u_{exact}}^i,x_{u_{exact}}^i)-\overline{u_\theta}(t_{u_{exact}}^i,x_{u_{exact}}^i)|^2 \right\}
-$$
-
-where $u$ is the exact solution.
 
 \section{Implementation}
 
@@ -260,27 +351,30 @@ where $u$ is the exact solution.
 We implement a Python code to approximate the solution of the PDE using PINNs,for this we will be using the library PyTorch for machine learning.
 The aim is to achieve a trained Neural Network that can give the output $u\theta(x, t)$, where x and t are set as inputs that satisfy Eq. (1). 
 
-
 This PDE has an analytical exact solution which is $u\theta(x,t) = u_0(x,x-ut)$, where $u_0$ is the initial condition that we define $u_0(x) = \exp(-(x-0.5)^2/0.1^2)$
-
 
 The basic principle is that a forward transfer on the network using the independent variables as PINNs inputs gives one the evaluated dependent variables.
 Since PINNs are derivable, we can compute the dependent variables (outputs). The dependent variables (inputs) to calculate the different derivatives that appear in the original PDEs. We create a loss function that fits the PDEs with this derivative throughout the training phase. 
 We will assume that our PINNs solve the PDEs if the loss function approaches a near-zero value. The training can be done in both an unsupervised and supervised setting.\\
 
 We define the collocation and the data points, each of which would have a separate loss function that will be added together to form the total loss function.
+
 When $t = 0$, the initial condition will use a Mean Square Error (MSE) loss function, which will equate the known initial condition with the PINNs output. For the spatial boundary condition, 
 we use a periodic condition that compares the solutions using an MSE loss functionat $x=xmin$ and $x=xmax$ for any t and forces them to be equal. the same is done for the temporal boundary condition. 
 We characterize our solution as a NN with two inputs (number of independent variables), hidden layers, and one output that is defined as $\overline{u_\theta}(x,t)$, which is the approximation of the solution of the PDE given by the NN. 
 
+%There are two approcahes to solve the PDEs using PINNs, the first one is Data-Driven and the othe rone is model based 
 %Explicar por encima cada function y solo poner las mas importantes
 %Description of the code implementation with some code snippets and explanations of the most important parts of the code.
+\subsubsection{Optimization code}
 
+The minimization process of the loss function is called training;
+%decrire le processus de minimisation de la fonction de perte
 
 \section{Results}
+Here we present the results of the PINNs implementation, we will show the results of the unsupervised and supervised learning, we will also show the results of the deep interpolation method.
 
 \subsection{Finding $u\theta$ using PINNs}
-
 
 \subsubsection{Unsupervised learning}
 
@@ -289,7 +383,6 @@ We characterize our solution as a NN with two inputs (number of independent vari
 
 
 \subsection{Solving using deep interpolation}
-
 
 
 \section{Conclusions}
