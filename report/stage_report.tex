@@ -62,13 +62,27 @@
 
 \section{Introduction}
 %Say something about like the importance of the transport equation and the need to solve it numerically and the use of neural networks 
+The focus of my internship was on solving simple transport equations using deep learning techniques, specifically Physics-Informed Neural Networks (PINNs). I will discuss the importance of solving transport equations numerically and the role of neural networks in this process.
 
+I will provide a theoretical framework for understanding augmented interpolation and PINNs, in the implementation section, I will describe the code developed for the PINNs approach, including the optimization process. I will also provide code snippets and explanations of the most important parts of the code.
+
+In the results section I will present the outcomes of the PINNs implementation, including the results of unsupervised and supervised learning.
+
+Finally, I will draw conclusions based on the findings and discuss the implications of the work.
+
+\newpage
+
+\section{General context}
+
+The intership project was supervised by Emmanuel Franck and Laurent Navoret researchers on the development of numerical methods to solve partial differential equations for the simulation of physical phenomena from the French National Institute for Research in Computer Science and Control (INRIA) which is a leading research institution focused on computer science, applied mathematics, and control theory. 
+The work is done in collaboration with the INRIA and the French National Centre for Scientific Research (CNRS)
+%DONNER PLUS DE CONTEXTE
 
 \section{Objectives}
 
-We are interested in solving the resolution of simple transport equations, the aim is to find a way to increase the accuracy of the method using deep learning techniques while keeping the guarantees of convergence.
+We are interested in solving simple transport equations, the aim is to find a way to increase the accuracy of the method using deep learning techniques while keeping the guarantees of convergence.
 For this we consider a simple case of deep interpolation where we approximate the solution of our transport equation by training a physics informed neural network.
-We used a machine learning framework like PyTorch to implement PINNs
+We used a machine learning framework like PyTorch to implement PINNs. 
 
 \section{Theoretical Framework}
 
@@ -133,6 +147,46 @@ $$\overline{u_\theta}(X)=W_n\sigma_{n-1}(W_{n-1}\sigma_{n-2}(...(W_2(W_1X+b_1)+b
     \caption{Neural Network Architecture}
 \end{figure}
 %Ajouter plus après
+\subsubsection{Feed-forward Neural Network (FFNN)}
+
+A Feed Forward Neural Network is an artificial neural network in which the connections between nodes does not form a cycle. 
+The opposite of a feed forward neural network is a recurrent neural network, in which certain pathways are cycled. 
+The feed forward model is the simplest form of neural network as information is only processed in one direction. While the data may pass through multiple hidden nodes, 
+it always moves in one direction and never backwards. In this projetc we will be implementing a FFNN for the PINN.
+
+\subsubsection{Multi Layer Perceptron (MLP)}
+
+A Multilayer Perceptron has input and output layers, and one or more hidden layers with many neurons stacked together. And while in the Perceptron the neuron must have an activation function that imposes a threshold, like ReLU or sigmoid, neurons in a Multilayer Perceptron can use any arbitrary activation function.
+Multilayer Perceptron falls under the category of feedforward algorithms, because inputs are combined with the initial weights in a weighted sum and subjected to the activation function, just like in the Perceptron. But the difference is that each linear combination is propagated to the next layer.
+Each layer is feeding the next one with the result of their computation, their internal representation of the data. This goes all the way through the hidden layers to the output layer.
+But it has more to it.
+If the algorithm only computed the weighted sums in each neuron, propagated results to the output layer, and stopped there, it wouldn’t be able to learn the weights that minimize the cost function. If the algorithm only computed one iteration, there would be no actual learning.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\textwidth]{images/MLP.png}
+    \caption{Multi Layer Perceptron}
+\end{figure}
+
+\subsubsection{Backpropagation}
+
+Backpropagation is a learning mechanism that allows the Multilayer Perceptron to iteratively adjust the weights in the network, with the goal of minimizing the cost function.
+There is one hard requirement for backpropagation to work properly. The function that combines inputs and weights in a neuron, for instance the weighted sum, and the threshold function, for instance ReLU, must be differentiable. These functions must have a bounded derivative, because Gradient Descent is typically the optimization function used in MultiLayer Perceptron.
+In each iteration, after the weighted sums are forwarded through all layers, the gradient of the Mean Squared Error is computed across all input and output pairs. Then, to propagate it back, the weights of the first hidden layer are updated with the value of the gradient. That’s how the weights are propagated back to the starting point of the neural network
+
+Then we get the following infographic that shows the whole process of a Multilayer Perceptron with feedforward and backpropagation:
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\textwidth]{images/MLP2.png}
+    \caption{Multi Layer Perceptron and Backpropagation}
+\end{figure}
+
+\subsubsection{Activation functions}
+
+The activation function that we choose for out neural network has an impact or its training. There are many commonly used activation functions like Sigmoid, Tanh, ReLU, we usually use the infinitely differentiable hyperbolic tangent activation function $tanh(x)$ that is perfect for 
+PINN. The regularity of PINNs can be ensured by using smooth activation functions like as the sigmoid and hyperbolic tangent, allowing estimations of PINN generalization error to hold true
+
 \subsection{Physics Informed Neural Networks}
 
 PINNs are a scientific machine learning technique used to solve problems in our case involving Partial Differential Equations (PDEs), they approximate PDE solutions by training a neural network to minimize a loss function; it includes terms reflecting the initial and boundary conditions along the space-time domain’s boundary and the PDE residual at selected points in the domain (called collocation point). 
@@ -173,37 +227,7 @@ Even if neural networks can express very complex functions compactly, determinin
 
 
 % \subsubsection{Training PINNs} AUN NO SEGURO  SI poner esta parte 
-\subsubsection{Feed-forward Neural Network (FFNN)}
 
-A Feed Forward Neural Network is an artificial neural network in which the connections between nodes does not form a cycle. 
-The opposite of a feed forward neural network is a recurrent neural network, in which certain pathways are cycled. 
-The feed forward model is the simplest form of neural network as information is only processed in one direction. While the data may pass through multiple hidden nodes, 
-it always moves in one direction and never backwards. In this projetc we will be implementing a FFNN for the PINN.
-
-\subsubsection{Multi Layer Perceptron (MLP)}
-A Multilayer Perceptron has input and output layers, and one or more hidden layers with many neurons stacked together. And while in the Perceptron the neuron must have an activation function that imposes a threshold, like ReLU or sigmoid, neurons in a Multilayer Perceptron can use any arbitrary activation function.
-Multilayer Perceptron falls under the category of feedforward algorithms, because inputs are combined with the initial weights in a weighted sum and subjected to the activation function, just like in the Perceptron. But the difference is that each linear combination is propagated to the next layer.
-Each layer is feeding the next one with the result of their computation, their internal representation of the data. This goes all the way through the hidden layers to the output layer.
-But it has more to it.
-If the algorithm only computed the weighted sums in each neuron, propagated results to the output layer, and stopped there, it wouldn’t be able to learn the weights that minimize the cost function. If the algorithm only computed one iteration, there would be no actual learning.
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.5\textwidth]{images/MLP.png}
-    \caption{Multi Layer Perceptron}
-\end{figure}
-
-\subsubsection{Backpropagation}
-Backpropagation is the learning mechanism that allows the Multilayer Perceptron to iteratively adjust the weights in the network, with the goal of minimizing the cost function.
-There is one hard requirement for backpropagation to work properly. The function that combines inputs and weights in a neuron, for instance the weighted sum, and the threshold function, for instance ReLU, must be differentiable. These functions must have a bounded derivative, because Gradient Descent is typically the optimization function used in MultiLayer Perceptron.
-In each iteration, after the weighted sums are forwarded through all layers, the gradient of the Mean Squared Error is computed across all input and output pairs. Then, to propagate it back, the weights of the first hidden layer are updated with the value of the gradient. That’s how the weights are propagated back to the starting point of the neural network
-
-Then we get the following infographic that shows the whole process of a Multilayer Perceptron with feedforward and backpropagation:
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.5\textwidth]{images/MLP2.png}
-    \caption{Multi Layer Perceptron and Backpropagation}
-\end{figure}
 
 \subsection{Soft and Hard Constraints}
 
@@ -217,16 +241,18 @@ Compared to the commonly used residual-based loss functions, the variational ene
 
 There are differetn approchaes for constructing the loss function there is the one including data-driven (without a physics model), PDE-based, and energy-based losses. 
 
+
 Comparing both the PDE-based and energy-based approaches have advantages and disadvantages. The PDE-based loss function has more hyperparameters than the energy-based loss function. The energy-based strategy is more sensitive to the size and resolution of the training samples but is less computationally intensive than the PDE-based strategy.
 
 
 \subsubsection{The Loss Function}
+
 Using the PINN approach we determine the parameters $\theta$ of the NN, $u_\theta$, by minimizing the loss function:
 
 $$
 \theta = argmin_\theta L(\theta)
 $$
-Where the loss function is defined as:`'
+Where the loss function is defined as:
 $$
 L(\theta) = L_{data}(\theta) + L_{physics}(\theta) + L_{SBC}(\theta) + L_{TBC}(\theta)+ L_{IC}(\theta)
 $$
