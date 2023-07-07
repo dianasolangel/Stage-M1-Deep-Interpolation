@@ -458,24 +458,37 @@ using the $u_\theta$ function that will be approximated by a neural network that
 
 \subsection{PINNs code}
 
-We implement a Python code to approximate  $u_\theta$ that in our case is equal to the solution of the PDE, by using the PINNs strategy,for this we will be using the library PyTorch for machine learning.
+We implement a Python code to approximate  $u_\theta$ that in our case is equal to the solution of the PDE, by using the PINNs strategy, for this we will be using the library PyTorch for machine learning.
 The aim is to achieve a trained Neural Network that can give the output $u\theta(x, t)$, where x and t are set as inputs that satisfy Eq. (1). 
 
-This PDE has an analytical exact solution which is $u\theta(x,t) = u_0(x,x-ut)$, where $u_0$ is the initial condition that we define $u_0(x) = \exp(-(x-0.5)^2/0.1^2)$
+This PDE has an analytical exact solution which is $u(x,t) = u_0(x,x-ut)$, where $u_0$ is the initial condition that we define $u_0(x) = \exp(-(x-\mu)^2/\sigma)$ where $\mu$ is the mean and $\sigma$ is the variance of the Gaussian distribution. 
 
-The basic principle is that a forward transfer on the network using the independent variables as PINNs inputs gives one the evaluated dependent variables.
+The fundamental concept is that by performing a forward pass through the network using the independent variables as inputs, one can obtain the corresponding evaluated dependent variables.
 Since PINNs are derivable, we can compute the dependent variables (outputs). The dependent variables (inputs) to calculate the different derivatives that appear in the original PDEs. We create a loss function that fits the PDEs with this derivative throughout the training phase. 
 We will assume that our PINNs solve the PDEs if the loss function approaches a near-zero value. The training can be done in both an unsupervised and supervised setting.\\
 
-We define the collocation and the data points, each of which would have a separate loss function that will be added together to form the total loss function.
+%NO ES UN BUEN LUGAR ACOMODAR
+% We define the collocation and the data points, each of which would have a separate loss function that will be added together to form the total loss function.
 
-When $t = 0$, the initial condition will use a Mean Square Error (MSE) loss function, which will equate the known initial condition with the PINNs output. For the spatial boundary condition, 
-we use a periodic condition that compares the solutions using an MSE loss functionat $x=xmin$ and $x=xmax$ for any t and forces them to be equal. the same is done for the temporal boundary condition. 
-We characterize our solution as a NN with two inputs (number of independent variables), hidden layers, and one output that is defined as $\overline{u_\theta}(x,t)$, which is the approximation of the solution of the PDE given by the NN. 
+% When $t = 0$, the initial condition will use a Mean Square Error (MSE) loss function, which will equate the known initial condition with the PINNs output. For the spatial boundary condition, 
+% we use a periodic condition that compares the solutions using an MSE loss functionat $x=xmin$ and $x=xmax$ for any t and forces them to be equal. the same is done for the temporal boundary condition. 
+% We characterize our solution as a NN with two inputs (number of independent variables), hidden layers, and one output that is defined as $\overline{u_\theta}(x,t)$, which is the approximation of the solution of the PDE given by the NN. 
 
 %There are two approcahes to solve the PDEs using PINNs, the first one is Data-Driven and the othe rone is model based 
 %Explicar por encima cada function y solo poner las mas importantes
 %Description of the code implementation with some code snippets and explanations of the most important parts of the code.
+\subsubsection{ Neural Network Class}
+
+The Net class represents a neural network model. It inherits from nn.DataParallel, which is a PyTorch module used for parallelizing the computation on multiple GPUs.
+Our neural network contains 6 fully connected layers, an input layer that expects four input features x, t, mean, and variance, five hidden layers, each consisting of fully connected linear units (nn.Linear) followed by the hyperbolic tangent activation function (torch.tanh). The hidden layers progressively reduce the input dimensions and extract higher-level features from the input data, 
+and finally the output layer that consists of a single fully connected linear unit (nn.Linear) without an activation function. It maps the output of hidden_layer5 to a single output value.
+
+The \textbf{forward} method defines the forward pass of the neural network, where the input tensors propagate through the layers in a sequential manner, applying the specified operations and activation functions. The resulting output is returned as the final output of the network.
+
+- `forward(x, t, mean, variance)`: This method defines the forward pass of the neural network. It takes input tensors x, t, mean, and variance, and applies a sequence of operations to produce the output of the network. The input tensors are concatenated ant the concatenated tensor is then passed through each hidden layer, with a non-linear activation function (tanh) applied after each layer. Finally, the output layer produces the final output of the network.
+
+- `net
+
 \subsubsection{Optimization code}
 
 The minimization process of the loss function is called training;
