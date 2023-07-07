@@ -64,7 +64,7 @@
 %Say something about like the importance of the transport equation and the need to solve it numerically and the use of neural networks 
 The focus of my internship was on solving simple transport equations using deep learning techniques, specifically Physics-Informed Neural Networks (PINNs). I will discuss the importance of solving transport equations numerically and the role of neural networks in this process.
 
-I will provide a theoretical framework for understanding augmented interpolation and PINNs, in the implementation section, I will describe the code developed for the PINNs approach, including the optimization process. I will also provide code snippets and explanations of the most important parts of the code.
+I will provide a theoretical framework for understanding the Semi-Lagrangian scheme with augmented interpolation and PINNs, in the implementation section, I will describe the code developed for the PINNs approach, including the optimization process. I will also provide code snippets and explanations of the most important parts of the code.
 
 In the results section I will present the outcomes of the PINNs implementation, including the results of unsupervised and supervised learning.
 
@@ -85,6 +85,67 @@ For this we consider a simple case of deep interpolation where we approximate th
 We used a machine learning framework like PyTorch to implement PINNs. 
 
 \section{Theoretical Framework}
+
+\subsection{Lagrange interpolation}
+
+We choose $n$ points inside $\left(x_1, \ldots, x_m\right)$.
+The Lagrange interpolation operator is defined as it follows:
+$$
+\mathcal{I}_h^m(f)(x)=\sum_{i=1}^m f\left(x_i\right) P_i(x)
+$$
+with $P_i\left(x_j\right)=\delta_{i j}$
+
+
+\subsection{Semi-Lagrangian Scheme}
+
+
+The semi-Lagrangian scheme is a numerical method to solve transport equations. It is based on the following idea for the 1D case:
+
+
+First to allow long time-steps, we construct the numerical domain of dependence to contain the physical domain of dependence.
+
+
+We have an uniform grid for space $\left[x_1, \ldots x_N\right]$ and one  for the time $\left[t_1, . . t_n\right]$ with $\Delta t=t_{i+1}-t_i$ and $\Delta x=x_{i+1}-x_i$.\\
+The numerical solution can be computed using the following scheme
+$$
+u\left(t_{n+1}, x_{jd}\right)=u\left(t_n, x_j-a \Delta t\right)= u (t_{n+1},x_{*})
+$$
+
+
+\begin{figure}[!h]
+\centering
+\includegraphics[width=0.4\textwidth]{images/11.png}
+\caption{Semi-Lagrangian Scheme}
+
+
+\end{figure}
+
+
+With  $x_{*}= x_{j}-a \Delta t$ but we can clearly see that our  $x_{*}$ is not a point of our mesh and consequently we cannot know $u\left(t_n, x_i-a \Delta t\right)$. Is in at this point that we make use of the following scheme.
+$$
+u\left(t_{n+1}, x_i\right)=\mathcal{I}_h^m\left(u\left(t_n, x\right)\right)\left(x_i-a \Delta t\right)
+$$
+
+
+Where we interpolate u at time $n+1$ from the n-closest points at time $n$ and onto $x_{*}$, using our Lagrange interpolation operator described before $\mathcal{I}_h^m$ uses the $n$ points around $\left(x_i-a \Delta t\right)$.\\
+
+
+\begin{figure}[!h]
+\centering
+\includegraphics[width=0.5\textwidth]{images/12.png}
+\caption{N-closest points for interpolation}
+\end{figure}
+
+
+\begin{figure}[!h]
+\centering
+\includegraphics[width=0.5\textwidth]{images/13.png}
+\caption{Different interpolation options}
+\end{figure}\\
+
+Then  $u\left(t_{n+1}, x_i\right)$ is the s the numerical solution computed at $\left(t_{n+1}, x_i\right)$. it is an implicit equation that needs to be solved in an iterative way.
+Such a procedure is called Semi-Lagrangian because the discrete solution is given on a Eulerian fixed mesh, but on the other hand the scheme relies on the construction of $u\left(t_n, x_j-a \Delta t\right)$ which is used to approximate  $u\left(t_{n+1}, x_j\right)$.
+
 
 \subsection{Augmented Interpolation}
 
@@ -115,7 +176,7 @@ $$
 u_\theta\left(x ; t, \mu, a(x), a^{\prime}(x)\right)
 $$
 
-We will train these neural networks with a P \textit{Physics Informed Neural Network} strategy and we will use the previous interpolation to approximate the solution of the PDE.
+We will train these neural networks with a \textbf{Physics Informed Neural Network} strategy and we will use the previous interpolation to approximate the solution of the PDE.
 
 \subsection{Supervised and unsupervised learning}
 
@@ -229,7 +290,7 @@ Even if neural networks can express very complex functions compactly, determinin
 % \subsubsection{Training PINNs} AUN NO SEGURO  SI poner esta parte 
 
 
-\subsection{Soft and Hard Constraints}
+\subsubsection{Soft and Hard Constraints}
 
 Boundary constraints can be viewed in two ways: as penalty term (soft BC enforcement) or as part of the network design (hard BC enforcement). In many existing PINN frameworks, a soft approach is taken to enforce the BCs by introducing additional loss components defined on the border's collocation points.
 
@@ -324,17 +385,8 @@ The physics constraints are included in the loss function to enforce model train
 When solving PDEs using a numerical discretization technique, we are
 interested in the numerical method’s stability, consistency, and convergence properties.\\
 
-%the convergence and stability are related to how well the NN learns from physical laws and data.
-\subsubsection{Convergence analysis}
 
-
-
-\subsubsection{Error analysis}
-
-
-
-
-\subsubsection{PINNs for solving PDEs} 
+\subsection{PINNs for solving PDEs} 
 
 
 In this project we were particularly interested in approximate the $u\theta$ function, which is the solution of the following PDE:
@@ -346,13 +398,30 @@ In this project we were particularly interested in approximate the $u\theta$ fun
      u(x,t=0) = u_0(x) \quad x \in \delta \Omega \\
     \end{cases}
 \end{equation}
+\\
+Where $u_0$ is the Gaussian initial solution defined as it follows:
 
-Which represents a wave propagating with a constant velocity $a$ with an unchanged shape.
+\begin{align*}
+    u_0 &= \exp\left(-\frac{(x - \mu)^2}{\sigma}\right)
+\end{align*}
+
+with $\mu$ the mean and $\sigma$ the variance of the Gaussian distribution.
+
+The problem (1) represents a wave propagating with a constant velocity $a$ with an unchanged shape and has an analytical solution equal to: 
+
+$$
+u(t, x)=u_0(x, x-at)
+$$
+
 
 %25
 %describir el proceso de como se utilizan las redes d eneuronas para poder resolver especialmente esta ecuacion diferencial parcial
 %y como se puede utilizar para poder encontrar la solucion de la ecuacion diferencial parcial
-We will train a neural network to approximate the solution of the PDE, we can do this by minimizing the error of the PDE in a certain number of points inside our domain.
+
+\subsubsection{Methodology}
+
+In our context t and x represent the time and space domains, we will train a neural network to approximate the solution of the PDE for all the discrtization points in step 
+at each time step  by a multilayer feedforward neural network, we can do this by minimizing the error of the PDE in a certain number of points inside our domain.
 
 We are going to represent our neural network by $\overline{u_\theta}$ then we define our initial condition as $u_0$ and our boundary condition as $u_b$ then we define our $u\theta$ as follows:
 
@@ -361,20 +430,35 @@ u\theta(x,t) = u_0 + b_c * \overline{u_\theta}(x,t)
 $$
 
 We assume then that:
+
 $$\overline{u_\theta}(x,t)\approx u(x,t,\theta)$$ 
+
 Where $\theta$ is the set of parameters we want to optimize in order to minimize the error of the solution given by our neural network.
-It may seem strange to define the partial derivative of a neural network, but since the neural network's activation function is smooth and differentiable, and we can derive it using automatic differentiation for any values of $x$ and $t$.
+It may seem strange to define the partial derivative of a neural network, but since the neural network's activation function is smooth and differentiable in our case we will be u
+using the \textbf{Tanh} activation fucntion, and we can derive it using automatic differentiation for any values of $x$ and $t$.
 
 %No se si esta bien 
-We look to minize $\theta$ in order to minimize the error of our neural network.
+We look to minize $\theta$ in order to minimize the error of our neural network, we can do so by using  a stochastic gradient descent-type (SGD) algorithm to optimize the parameter $\theta$ just 
+as the standard training of deep neural networks. In our numerical examples, we use the Adam optimizer.
 
+%the convergence and stability are related to how well the NN learns from physical laws and data.
 
+\subsubsection{Convergence analysis}
+One of the goals for the implementation of the PINN theory is to investigate the convergence and stability of the computed $u_\theta$ to the exact solution of the problem. They are related to how well the NN learns from physical laws and data.
+
+\subsubsection{Error analysis}
 
 \section{Implementation}
+Our main objective is to implement a solver that based on the Semi-Lagrangian scheme, and implementing the Deep Lagrange interpolation operator 
+using the $u_\theta$ function that will be approximated by a neural network that implements the PINNs strategy will solve the equation (1) for different initial conditions depending on the values of $\mu$ and $\sigma$.
+
+\subsection{Semi-Lagrangian solver}
+%Resumir lo que escribi en el otro lado... (puede esperar)
+
 
 \subsection{PINNs code}
 
-We implement a Python code to approximate the solution of the PDE using PINNs,for this we will be using the library PyTorch for machine learning.
+We implement a Python code to approximate  $u_\theta$ that in our case is equal to the solution of the PDE, by using the PINNs strategy,for this we will be using the library PyTorch for machine learning.
 The aim is to achieve a trained Neural Network that can give the output $u\theta(x, t)$, where x and t are set as inputs that satisfy Eq. (1). 
 
 This PDE has an analytical exact solution which is $u\theta(x,t) = u_0(x,x-ut)$, where $u_0$ is the initial condition that we define $u_0(x) = \exp(-(x-0.5)^2/0.1^2)$
@@ -425,5 +509,6 @@ Salvatore Cuomo1 · Vincenzo Schiano Di Cola2 · Fabio Giampaolo1 · Gianluigi R
 \bibiitem[label]{4} {Feed Forward Neural Network} {https://deepai.org/machine-learning-glossary-and-terms/feed-forward-neural-network}
 \bibiitem[label]{5} {What is a feedforward neural network?} {https://www.ibm.com/cloud/learn/feedforward-neural-network}
 \bibiitem[label]{6} {Multilayer Perceptron Explained with a Real-Life Example and Python Code} {https://towardsdatascience.com/multilayer-perceptron-explained-with-a-real-life-example-and-python-code-sentiment-analysis-cb408ee93141}
+\bibiitem[label]{7} {https://www.pnas.org/doi/full/10.1073/pnas.1718942115}
 \end{document}
 
