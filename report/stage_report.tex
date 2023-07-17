@@ -14,13 +14,14 @@
 \usepackage{fancyhdr}
 \usepackage{float}
 
-\hypersetup{                    % parametrage des hyperliens
-    colorlinks=true,                % colorise les liens
-    breaklinks=true,                % permet les retours à la ligne pour les liens trop longs
-    urlcolor= true,                 % couleur des hyperliens
-    linkcolor= true,                % couleur des liens internes aux documents (index, figures, tableaux, equations,...)
-    citecolor= true,              % couleur des liens vers les references bibliographiques
-    }
+\hypersetup{
+    colorlinks=true,
+    breaklinks=true,
+    urlcolor=blue,           % set the color of hyperlinks to blue
+    linkcolor=black,           % set the color of internal links (index, figures, tables, equations, etc.) to red
+    citecolor=green,         % set the color of links to bibliographic references to green
+}
+
 
 \begin{document}
 \begin{titlepage}
@@ -141,7 +142,7 @@ Where we interpolate u at time $n+1$ from the n-closest points at time $n$ and o
 \centering
 \includegraphics[width=0.5\textwidth]{images/13.png}
 \caption{Different interpolation options}
-\end{figure}\\
+\end{figure}
 
 Then  $u\left(t_{n+1}, x_i\right)$ is the s the numerical solution computed at $\left(t_{n+1}, x_i\right)$. it is an implicit equation that needs to be solved in an iterative way.
 Such a procedure is called Semi-Lagrangian because the discrete solution is given on a Eulerian fixed mesh, but on the other hand the scheme relies on the construction of $u\left(t_n, x_j-a \Delta t\right)$ which is used to approximate  $u\left(t_{n+1}, x_j\right)$.
@@ -262,15 +263,11 @@ PINN can be viewed as an unsupervised learning approach when they are trained so
     \caption{PINNs}
 \end{figure}
 
-$PINNs​ = ​Data​ + ​Neural​Networks​ + ​Physical​Laws$
+% PINNs​ = ​Data​ + ​Neural​Networks​ + ​Physical​Laws
 
 \subsubsection{Architecture of PINNs}
 
-PINN are composed of three components: a neural network, a physics-informed network, and a feedback mechanism. The first block is a NN, $u_θ$,
-that accepts vector variables  and outputs the filed value u. The second block can be thought of PINN’s functional component, as it computes the derivative to determine the losses of equation terms,
-as well as the terms of the initial and boundary conditions of the PDE. Generally, the first two blocks are linked using algorithmic differentiation, which is used to inject physical equations into 
-the NN during the training phase. Thus, the feedback mechanism minimizes the loss according to some learning rate, in order to fix the NN parameters vector θ of the NN $u_θ$.
-In the following, it will be clear from the context to what network we are referring to, whether the NN or the functional network that derives the physical information.
+% PINNs are composed of three components: a neural network, a physics-informed network, and a feedback mechanism. The first block is a NN, u_theta, that accepts vector variables and outputs the field value u. The second block can be thought of as PINN's functional component, as it computes the derivative to determine the losses of equation terms, as well as the terms of the initial and boundary conditions of the PDE. Generally, the first two blocks are linked using algorithmic differentiation, which is used to inject physical equations into the NN during the training phase. Thus, the feedback mechanism minimizes the loss according to some learning rate, in order to fix the NN parameters vector theta of the NN u_theta. In the following, it will be clear from the context to what network we are referring to, whether the NN or the functional network that derives the physical information.
 
 %ajouter une fois que j'ai la bonne architecture qu'on va utiliser pour le PINN
 % \begin{figure}[H]
@@ -518,12 +515,12 @@ The training was done using the following parameters:
    \item ndata = 10000
 \end{itemize}
 
-The best loss we obtained was: 7.80e-04 \\
+The best loss we obtained was: 7.80e-04 
 
 \subsection{Solving using deep interpolation}
 The following results were obtained using the following parameters:
-\begin{itemize}
 
+\begin{itemize}
     \item $xmin = 0.0$
     \item $xmax = 1.0$
     \item $tmin = 0.0$
@@ -532,38 +529,148 @@ The following results were obtained using the following parameters:
     \item $a = 1$
     \item $mean = 0.5$
     \item $variance = 0.035$
-  \end{itemize}
+\end{itemize}
 
 For exemple for an initial solution with mean=0.5 and variance = 0.035 we get the following approximation made by the network at different time steps:\\
-
+\newpage
 \begin{figure}[!h]
     \centering
-    \includegraphics[width=0.6\textwidth]{r1.png}
+    \includegraphics[width=0.5\textwidth]{images/r1.png}
     \caption{t=0}
-    \includegraphics[width=0.6\textwidth]{r2.png}
+    \includegraphics[width=0.5\textwidth]{images/r2.png}
     \caption{t=0.25}
-    \includegraphics[width=0.6\textwidth]{r3.png}
+    \includegraphics[width=0.5\textwidth]{images/r3.png}
     \caption{t=0.5}
-    \includegraphics[width=0.6\textwidth]{r4.png}
+    \includegraphics[width=0.5\textwidth]{images/r4.png}
     \caption{t=0.75}
-    \includegraphics[width=0.6\textwidth]{r5.png}
+    \includegraphics[width=0.5\textwidth]{images/r5.png}
     \caption{t=1}
 \end{figure}
 
-\section{Conclusions}
+We obtained the following errors calculated in L2 norm compared to the exact solution (in loglog scale) of the transport equation according to the initial condition defined by the Gaussian with the mean and the variance given in parameter at times tf/4 tf /2 and tf (with tf the final time)\\
+\subsection{Interpolation of order 1}
+
+The \textbf{SL classic} solution is obtained with the Semi-Lagrangian scheme and the classic Lagrange interpolation, \textbf{SL Deep} is calculated using this time the deep interpolation operator and $u_\theta $ as the solution given by the neural network, \textbf{Network} is the solution obtained by the network.\\
+
+\begin{figure}[!h]
+    \centering
+    \includegraphics[width=0.4\textwidth]{images/i110.png}
+    \caption{nx = 10}
+    \includegraphics[width=0.4\textwidth]{images/i120.png}
+    \caption{nx = 20}
+    \includegraphics[width=0.4\textwidth]{images/i1.png}
+    \caption{nx = 40}
+
+\end{figure}
+The solution \textbf{perturbed SL} is defined as the exact solution to which we add different perturbations $\epsilon + \cos(x)$, here is what we get:\\
+
+\begin{figure}[!h]
+    \centering
+    \includegraphics[width=0.45\textwidth]{images/10ep11.png}
+    \includegraphics[width=0.45\textwidth]{images/10ep12.png}
+    \includegraphics[width=0.45\textwidth]{images/10ep13.png}
+    \includegraphics[width=0.45\textwidth]{images/10ep14.png}
+    \includegraphics[width=0.45\textwidth]{images/10ep15.png}
+    \caption{$nx = 10$}
+\end{figure}
 
 \newpage
 
-\section{Bibliography}
-\bibitem[label]{1} {Scientific Machine Learning Through Physics–Informed Neural Networks: Where we are and What’s Next}
-Salvatore Cuomo1 · Vincenzo Schiano Di Cola2 · Fabio Giampaolo1 · Gianluigi Rozza3 · Maziar Raissi4 · Francesco Piccialli1
-26 July 2022
-\bibitem[label]{2} {Supervised vs. Unsupervised Learning: What’s the Difference?} {https://www.ibm.com/cloud/blog/supervised-vs-unsupervised-learning}
-\bibiitem[label]{3} {What are neural networks?} {https://www.ibm.com/topics/neural-networks}
+\begin{figure}[!h]
+    \centering
+    \includegraphics[width=0.45\textwidth]{images/20ep11.png}
+    \includegraphics[width=0.45\textwidth]{images/20ep12.png}
+    \includegraphics[width=0.45\textwidth]{images/20ep13.png}
+    \includegraphics[width=0.45\textwidth]{images/20ep14.png}
+    \includegraphics[width=0.45\textwidth]{images/20ep15.png}
+    \caption{$nx = 20$}
+\end{figure}
 
-\bibiitem[label]{4} {Feed Forward Neural Network} {https://deepai.org/machine-learning-glossary-and-terms/feed-forward-neural-network}
-\bibiitem[label]{5} {What is a feedforward neural network?} {https://www.ibm.com/cloud/learn/feedforward-neural-network}
-\bibiitem[label]{6} {Multilayer Perceptron Explained with a Real-Life Example and Python Code} {https://towardsdatascience.com/multilayer-perceptron-explained-with-a-real-life-example-and-python-code-sentiment-analysis-cb408ee93141}
-\bibiitem[label]{7} {https://www.pnas.org/doi/full/10.1073/pnas.1718942115}
+\newpage
+
+\begin{figure}[!h]
+    \centering
+    \includegraphics[width=0.45\textwidth]{images/ep11.png}
+    \includegraphics[width=0.45\textwidth]{images/ep12.png}
+    \includegraphics[width=0.45\textwidth]{images/ep13.png}
+    \includegraphics[width=0.45\textwidth]{images/ep14.png}
+    \includegraphics[width=0.45\textwidth]{images/ep15.png}
+    \caption{$nx = 40$}
+\end{figure}
+
+\subsection{Interpolation of order 3}
+
+The \textbf{SL classic} solution is obtained with the Semi-Lagrangian scheme and the classic Lagrange interpolation, \textbf{SL Deep} is calculated using this time the deep interpolation operator and $u_\theta $ as the solution given by the neural network, \textbf{Network} is the solution obtained by the network.\\
+
+\begin{figure}[!h]
+    \centering
+    \includegraphics[width=0.5\textwidth]{images/i310.png}
+    \caption{$nx = 10$}
+    \includegraphics[width=0.5\textwidth]{images/i320.png}
+    \caption{$nx = 20$}
+    \includegraphics[width=0.5\textwidth]{images/i3.png}
+    \caption{$nx = 40$}
+\end{figure}
+
+\newpage
+
+The solution \textbf{perturbed SL} is defined as the exact solution to which we add different perturbations $\epsilon + \cos(x)$, here is what we get:\\
+
+\begin{figure}[!h]
+    \centering
+    \includegraphics[width=0.4\textwidth]{images/10ep21.png}
+    \includegraphics[width=0.4\textwidth]{images/10ep22.png}
+    \includegraphics[width=0.4\textwidth]{images/10ep23.png}
+    \includegraphics[width=0.4\textwidth]{images/10ep24.png}
+    \includegraphics[width=0.4\textwidth]{images/10ep25.png}
+    \caption{$nx = 10$}
+\end{figure}
+
+\begin{figure}[!h]
+    \centering
+    \includegraphics[width=0.4\textwidth]{images/20ep21.png}
+    \includegraphics[width=0.4\textwidth]{images/20ep22.png}
+    \includegraphics[width=0.4\textwidth]{images/20ep23.png}
+    \includegraphics[width=0.4\textwidth]{images/20ep24.png}
+    \includegraphics[width=0.4\textwidth]{images/20ep25.png}
+    \caption{$nx = 20$}
+\end{figure}
+
+\begin{figure}[!h]
+    \centering
+    \includegraphics[width=0.4\textwidth]{images/ep21.png}
+    \includegraphics[width=0.4\textwidth]{images/ep22.png}
+    \includegraphics[width=0.4\textwidth]{images/ep23.png}
+    \includegraphics[width=0.4\textwidth]{images/ep24.png}
+    \includegraphics[width=0.4\textwidth]{images/ep25.png}
+    \caption{$nx = 40$}
+\end{figure}
+
+\newpage
+
+\subsection{Average gain}
+
+By randomly drawing 20 parameters for the mean and the variance to have different initial conditions, we calculate for each the solution with the classic and deep Semi-Lagrangian method and we look at the $gain=SL error/deep SL error$ by doing the average over the 20 parameters.
+
+By making several draws of 20 parameters, the following average gains are obtained:
+
+For a 1st order interpolation: 137.7119541688143, 97.15674818809492, 185.7843283662372
+
+For an interpolation of order 3: 7.608668520339034, 3.1395029764283313,4.496461973620286
+
+\newpage
+\section{Conclusions}
+
+\section{Bibliography}
+% \bibitem[label]{1} {Scientific Machine Learning Through Physics–Informed Neural Networks: Where we are and What’s Next}
+% Salvatore Cuomo1 · Vincenzo Schiano Di Cola2 · Fabio Giampaolo1 · Gianluigi Rozza3 · Maziar Raissi4 · Francesco Piccialli1
+% 26 July 2022
+% \bibitem[label]{2} {Supervised vs. Unsupervised Learning: What’s the Difference?} {https://www.ibm.com/cloud/blog/supervised-vs-unsupervised-learning}
+% \bibiitem[label]{3} {What are neural networks?} {https://www.ibm.com/topics/neural-networks}
+
+% \bibiitem[label]{4} {Feed Forward Neural Network} {https://deepai.org/machine-learning-glossary-and-terms/feed-forward-neural-network}
+% \bibiitem[label]{5} {What is a feedforward neural network?} {https://www.ibm.com/cloud/learn/feedforward-neural-network}
+% \bibiitem[label]{6} {Multilayer Perceptron Explained with a Real-Life Example and Python Code} {https://towardsdatascience.com/multilayer-perceptron-explained-with-a-real-life-example-and-python-code-sentiment-analysis-cb408ee93141}
+% \bibiitem[label]{7} {https://www.pnas.org/doi/full/10.1073/pnas.1718942115}
 \end{document}
 
