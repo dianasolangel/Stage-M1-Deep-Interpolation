@@ -481,13 +481,22 @@ We will assume that our PINNs solve the PDEs if the loss function approaches a n
 
 The Net class represents a neural network model. It inherits from nn.DataParallel, which is a PyTorch module used for parallelizing the computation on multiple GPUs.
 Our neural network contains 6 fully connected layers, an input layer that expects four input features x, t, mean, and variance, five hidden layers, each consisting of fully connected linear units (nn.Linear) followed by the hyperbolic tangent activation function (torch.tanh). The hidden layers progressively reduce the input dimensions and extract higher-level features from the input data, 
-and finally the output layer that consists of a single fully connected linear unit (nn.Linear) without an activation function. It maps the output of hidden_layer5 to a single output value.
+and finally the output layer that consists of a single fully connected linear unit (nn.Linear) without an activation function. It maps the output of hidden layer5 to a single output value.
 
 The \textbf{forward} method defines the forward pass of the neural network, where the input tensors propagate through the layers in a sequential manner, applying the specified operations and activation functions. The resulting output is returned as the final output of the network.
 
-- `forward(x, t, mean, variance)`: This method defines the forward pass of the neural network. It takes input tensors x, t, mean, and variance, and applies a sequence of operations to produce the output of the network. The input tensors are concatenated ant the concatenated tensor is then passed through each hidden layer, with a non-linear activation function (tanh) applied after each layer. Finally, the output layer produces the final output of the network.
+% - `forward(x, t, mean, variance)`: This method defines the forward pass of the neural network. It takes input tensors x, t, mean, and variance, and applies a sequence of operations to produce the output of the network. The input tensors are concatenated ant the concatenated tensor is then passed through each hidden layer, with a non-linear activation function (tanh) applied after each layer. Finally, the output layer produces the final output of the network.
 
-- `net
+The \textbf{networkBC} This method serves to impose the hard boundary condition, so when $t=0$ we get that the solution at that time is equal to the initial solution. 
+
+\subsubsection{Parameters class}
+
+This class defines the set of parameters for the PINN classn including the initial condition $u_0$ 
+
+\subsubsection{Network class}
+
+The Network class represents a PINN.
+
 
 \subsubsection{Optimization code}
 
@@ -497,16 +506,49 @@ The minimization process of the loss function is called training;
 \section{Results}
 Here we present the results of the PINNs implementation, we will show the results of the unsupervised and supervised learning, we will also show the results of the deep interpolation method.
 
-\subsection{Finding $u\theta$ using PINNs}
+\subsection{Finding $u_\theta$ using PINNs}
 
-\subsubsection{Unsupervised learning}
+\subsubsection{Unsupervised and supervised learning}
 
+The training was done using the following parameters:
 
-\subsubsection{Supervised learning}
+\begin{itemize}
+   \item epocs = 40000
+   \item ncollocation = 50000
+   \item ndata = 10000
+\end{itemize}
 
+The best loss we obtained was: 7.80e-04 \\
 
 \subsection{Solving using deep interpolation}
+The following results were obtained using the following parameters:
+\begin{itemize}
 
+    \item $xmin = 0.0$
+    \item $xmax = 1.0$
+    \item $tmin = 0.0$
+    \item $tf = 1.0$
+    \item $nt = 100$
+    \item $a = 1$
+    \item $mean = 0.5$
+    \item $variance = 0.035$
+  \end{itemize}
+
+For exemple for an initial solution with mean=0.5 and variance = 0.035 we get the following approximation made by the network at different time steps:\\
+
+\begin{figure}[!h]
+    \centering
+    \includegraphics[width=0.6\textwidth]{r1.png}
+    \caption{t=0}
+    \includegraphics[width=0.6\textwidth]{r2.png}
+    \caption{t=0.25}
+    \includegraphics[width=0.6\textwidth]{r3.png}
+    \caption{t=0.5}
+    \includegraphics[width=0.6\textwidth]{r4.png}
+    \caption{t=0.75}
+    \includegraphics[width=0.6\textwidth]{r5.png}
+    \caption{t=1}
+\end{figure}
 
 \section{Conclusions}
 
