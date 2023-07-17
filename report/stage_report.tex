@@ -548,6 +548,7 @@ For exemple for an initial solution with mean=0.5 and variance = 0.035 we get th
 \end{figure}
 
 We obtained the following errors calculated in L2 norm compared to the exact solution (in loglog scale) of the transport equation according to the initial condition defined by the Gaussian with the mean and the variance given in parameter at times tf/4 tf /2 and tf (with tf the final time)\\
+
 \subsection{Interpolation of order 1}
 
 The \textbf{SL classic} solution is obtained with the Semi-Lagrangian scheme and the classic Lagrange interpolation, \textbf{SL Deep} is calculated using this time the deep interpolation operator and $u_\theta $ as the solution given by the neural network, \textbf{Network} is the solution obtained by the network.\\
@@ -560,11 +561,12 @@ The \textbf{SL classic} solution is obtained with the Semi-Lagrangian scheme and
     \caption{nx = 20}
     \includegraphics[width=0.4\textwidth]{images/i1.png}
     \caption{nx = 40}
-
 \end{figure}
+
 The solution \textbf{perturbed SL} is defined as the exact solution to which we add different perturbations $\epsilon + \cos(x)$, here is what we get:\\
 
-\begin{figure}[!h]
+\newpage
+\begin{figure}[h]
     \centering
     \includegraphics[width=0.45\textwidth]{images/10ep11.png}
     \includegraphics[width=0.45\textwidth]{images/10ep12.png}
@@ -576,7 +578,7 @@ The solution \textbf{perturbed SL} is defined as the exact solution to which we 
 
 \newpage
 
-\begin{figure}[!h]
+\begin{figure}[h]
     \centering
     \includegraphics[width=0.45\textwidth]{images/20ep11.png}
     \includegraphics[width=0.45\textwidth]{images/20ep12.png}
@@ -586,9 +588,7 @@ The solution \textbf{perturbed SL} is defined as the exact solution to which we 
     \caption{$nx = 20$}
 \end{figure}
 
-\newpage
-
-\begin{figure}[!h]
+\begin{figure}[h]
     \centering
     \includegraphics[width=0.45\textwidth]{images/ep11.png}
     \includegraphics[width=0.45\textwidth]{images/ep12.png}
@@ -598,7 +598,14 @@ The solution \textbf{perturbed SL} is defined as the exact solution to which we 
     \caption{$nx = 40$}
 \end{figure}
 
+
 \subsection{Interpolation of order 3}
+% \begin{figure}[h]  % "h" stands for "here", indicating that you want the figure to be placed as close as possible to the current position in the text
+%     \centering
+%     \includegraphics[width=\textwidth]{image.jpg}  % Replace "image.jpg" with the filename of your image
+%     \caption{This is a caption for the image.}
+%     \label{fig:image-label}
+% \end{figure}
 
 The \textbf{SL classic} solution is obtained with the Semi-Lagrangian scheme and the classic Lagrange interpolation, \textbf{SL Deep} is calculated using this time the deep interpolation operator and $u_\theta $ as the solution given by the neural network, \textbf{Network} is the solution obtained by the network.\\
 
@@ -612,8 +619,6 @@ The \textbf{SL classic} solution is obtained with the Semi-Lagrangian scheme and
     \caption{$nx = 40$}
 \end{figure}
 
-\newpage
-
 The solution \textbf{perturbed SL} is defined as the exact solution to which we add different perturbations $\epsilon + \cos(x)$, here is what we get:\\
 
 \begin{figure}[!h]
@@ -625,7 +630,6 @@ The solution \textbf{perturbed SL} is defined as the exact solution to which we 
     \includegraphics[width=0.4\textwidth]{images/10ep25.png}
     \caption{$nx = 10$}
 \end{figure}
-
 \begin{figure}[!h]
     \centering
     \includegraphics[width=0.4\textwidth]{images/20ep21.png}
@@ -635,7 +639,6 @@ The solution \textbf{perturbed SL} is defined as the exact solution to which we 
     \includegraphics[width=0.4\textwidth]{images/20ep25.png}
     \caption{$nx = 20$}
 \end{figure}
-
 \begin{figure}[!h]
     \centering
     \includegraphics[width=0.4\textwidth]{images/ep21.png}
