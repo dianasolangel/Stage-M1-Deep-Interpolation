@@ -455,6 +455,12 @@ as the standard training of deep neural networks. In our numerical examples, we 
 
 %the convergence and stability are related to how well the NN learns from physical laws and data.
 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{images/loss.jpg}
+    \caption{PINNs}
+\end{figure}
+
 \subsubsection{Convergence analysis}
 One of the goals for the implementation of the PINN theory is to investigate the convergence and stability of the computed $u_\theta$ to the exact solution of the problem. They are related to how well the NN learns from physical laws and data.
 
@@ -584,6 +590,7 @@ And the following parameters:
  \end{itemize}
 
 \section{Results}
+
 Here we present the results of the PINNs implementation, we will show the results of the unsupervised and supervised learning, we will also show the results of the deep interpolation method.
 
 \subsection{Finding $u_\theta$ using PINNs}
@@ -596,7 +603,7 @@ The training was done using the following parameters:
    \item[--] epocs = 40000
    \item[--] ncollocation = 50000
    \item[--] ndata = 10000
-\end{itemize}The best loss we obtained was: \textbf{7.80e-04} \\
+\end{itemize} The best loss we obtained was: \textbf{7.80e-04} \\
 For an initial solution with mean=0.5 and variance = 0.035 we get the following approximation made by the network at different time steps:\\
 
 \begin{equation*}
@@ -607,28 +614,24 @@ For an initial solution with mean=0.5 and variance = 0.035 we get the following 
     \centering
     \includegraphics[width=0.5\textwidth]{images/r1.png}
     \caption{t=0}
-\end{figure}
-
-\begin{figure}[!h]
-    \centering
+% \end{figure}
+% \begin{figure}[!h]
+    % \centering
     \includegraphics[width=0.5\textwidth]{images/r2.png}
     \caption{t=0.25}
-\end{figure}
-
-\begin{figure}[!h]
-    \centering
+% \end{figure}
+% \begin{figure}[!h]
+%     \centering
     \includegraphics[width=0.5\textwidth]{images/r3.png}
     \caption{t=0.5}
-\end{figure}
-
-\begin{figure}[!h]
-    \centering
+% \end{figure}
+% \begin{figure}[!h]
+%     \centering
     \includegraphics[width=0.5\textwidth]{images/r4.png}
     \caption{t=0.75}
-\end{figure}
-
-\begin{figure}[!h]
-    \centering
+% \end{figure}
+% \begin{figure}[!h]
+%     \centering
     \includegraphics[width=0.5\textwidth]{images/r5.png}
     \caption{t=1}
 \end{figure} 
@@ -656,8 +659,7 @@ The following results were obtained using the following parameters:
     \item[--] $variance = 0.035$
 \end{itemize}
 
-We obtained the following errors calculated in L2 norm compared to the exact solution (in loglog scale) of the transport equation according to the initial condition defined by the Gaussian with the mean and the variance given in parameter at times tf/4 tf /2 and tf (with tf the final time)\\
-
+We obtained the following errors calculated in L2 norm compared to the exact solution (in loglog scale) of the transport equation according to the initial condition defined by the Gaussian with the mean and the variance given in parameter at times tf/4 tf /2 and tf (with tf the final time)
 \subsection{Interpolation of order 1}
 
 The \textbf{SL classic} solution is obtained with the Semi-Lagrangian scheme and the classic Lagrange interpolation, \textbf{SL Deep} is calculated using this time the deep interpolation operator and $u_\theta $ as the solution given by the neural network, \textbf{Network} is the solution obtained by the network.\\
@@ -672,9 +674,9 @@ The \textbf{SL classic} solution is obtained with the Semi-Lagrangian scheme and
     \caption{nx = 40}
 \end{figure}
 
-The solution \textbf{perturbed SL} is defined as the exact solution to which we add different perturbations $\epsilon + \cos(x)$, here is what we get:\\
-
 \newpage
+
+The solution \textbf{perturbed SL} is defined as the exact solution to which we add different perturbations $\epsilon + \cos(x)$, here is what we get:\\
 
 \begin{figure}[h]
     \centering
@@ -686,7 +688,6 @@ The solution \textbf{perturbed SL} is defined as the exact solution to which we 
     \caption{$nx = 10$}
 \end{figure}
 
-\newpage
 
 \begin{figure}[h]
     \centering
