@@ -249,14 +249,24 @@ Then we get the following infographic that shows the whole process of a Multilay
 The activation function that we choose for out neural network has an impact or its training. There are many commonly used activation functions like Sigmoid, Tanh, ReLU, we usually use the infinitely differentiable hyperbolic tangent activation function $tanh(x)$ that is perfect for 
 PINN. The regularity of PINNs can be ensured by using smooth activation functions like as the sigmoid and hyperbolic tangent, allowing estimations of PINN generalization error to hold true
 
+\subsubsection{Universal Approximation Theorem}
+
+The representational ability of neural networks is well established. According to the universal approximation theorem:
+The universal approximation theorem states that any continuous function  $$f : [0, 1]^{n} \rightarrow [0, 1]$$  can be approximated arbitrarily well by a neural network with at least 1 hidden layer with a finite number of weights.
+Even if neural networks can express very complex functions compactly, determining the precise parameters (weights and biases) required to solve a specific PDE can be difficult.
+
+
 \subsection{Physics Informed Neural Networks}
 
-PINNs are a scientific machine learning technique used to solve problems in our case involving Partial Differential Equations (PDEs), they approximate PDE solutions by training a neural network to minimize a loss function; it includes terms reflecting the initial and boundary conditions along the space-time domain’s boundary and the PDE residual at selected points in the domain (called collocation point). 
+Physics-informed neural networks (PINNs) are a type of universal function approximators that can embed the knowledge of any physical laws that govern a given data-set in the learning process, and can be described by partial differential equations (PDEs).
+
+They approximate PDE solutions by training a neural network to minimize a loss function; it includes terms reflecting the initial and boundary conditions along the space-time domain’s boundary and the PDE residual at selected points in the domain (called collocation point). 
 they are deep-learning networks that, given an input point in the integration domain, produce an estimated solution in that point of a differential equation after training. Incorporating a residual network that encodes the governing physics equations is a significant novelty with PINNs. 
+
 The basic concept behind PINN training is that it can be thought of as an unsupervised strategy that does not require labelled data, such as results from prior simulations or experiments.
 It works by integrating the mathematical model into the network and reinforcing the loss function with a residual term from the governing equation, which acts as a penalizing term to restrict the space of acceptable solutions.
 
-PINN can be viewed as an unsupervised learning approach when they are trained solely using physical equations and boundary conditions for forward problems; however, for inverse problems or when some physical properties are derived from data that may be noisy, PINN can be considered supervised learning when they are trained using the data from the calculation of the exact solution of the PDE.
+PINN can be viewed as an unsupervised learning approach when they are trained solely using physical equations and boundary conditions for forward problems; however, for inverse problems or when some physical properties are derived from data that may be noisy, PINNs can be considered supervised learning when they are trained using the data from the calculation of the exact solution of the PDE.
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.5\textwidth]{images/pinns}
@@ -277,12 +287,6 @@ PINN can be viewed as an unsupervised learning approach when they are trained so
 % \end{figure}
 
 
-\subsubsection{Universal Approximation Theorem}
-
-The representational ability of neural networks is well established. According to the universal approximation theorem:
-The universal approximation theorem states that any continuous function  $$f : [0, 1]n \rightarrow [0, 1]$$  can be approximated arbitrarily well by a neural network with at least 1 hidden layer with a finite number of weights.
-Even if neural networks can express very complex functions compactly, determining the precise parameters (weights and biases) required to solve a specific PDE can be difficult.
-
 
 % \subsubsection{Training PINNs} AUN NO SEGURO  SI poner esta parte 
 
@@ -295,12 +299,9 @@ However, this technique has two drawbacks: it does not guarantee accurate satisf
 
 There is also the hard approach to address the boundary conditions by incorporating a specific component in the neural network solely dedicated to meeting the conditions. Thus, the initial boundary conditions are considered as part of the labeled data constraint.
 
-Compared to the commonly used residual-based loss functions, the variational energy-based loss function is simpler to minimize and yields better results. The loss function can be constructed using collocation points, weighted residuals derived from the Galerkin-Method, or an energy-based approach. 
+% Compared to the commonly used residual-based loss functions, the variational energy-based loss function is simpler to minimize and yields better results. The loss function can be constructed using collocation points, weighted residuals derived from the Galerkin-Method, or an energy-based approach. 
 
-There are differetn approchaes for constructing the loss function there is the one including data-driven (without a physics model), PDE-based, and energy-based losses. 
-
-
-Comparing both the PDE-based and energy-based approaches have advantages and disadvantages. The PDE-based loss function has more hyperparameters than the energy-based loss function. The energy-based strategy is more sensitive to the size and resolution of the training samples but is less computationally intensive than the PDE-based strategy.
+% There are different approaches for constructing the loss function there is the one including data-driven (without a physics model), PDE-based. 
 
 
 \subsubsection{The Loss Function}
@@ -386,30 +387,44 @@ interested in the numerical method’s stability, consistency, and convergence p
 \subsection{PINNs for solving PDEs} 
 
 
-In this project we were particularly interested in approximate the $u\theta$ function, which is the solution of the following PDE:
+In this project we were particularly interested in approximating the $u\theta$ function, which is the solution of the following PDE:
 
-\textbf{Advection Equation}
+\subsubsection*{Advection Equation}
+
 \begin{equation}
     \begin{cases}
-    \frac{\partial u}{\partial t} + a \frac{\partial u}{\partial x} = 0 \quad (x,t) \in \Omega \times (0,T] \\
+    \frac{\partial u}{\partial t} + a \frac{\partial u}{\partial x} = 0 \quad (x,t) \in \Omega \times (0,T) \\
      u(x,t=0) = u_0(x) \quad x \in \delta \Omega \\
     \end{cases}
 \end{equation}
 \\
-Where $u_0$ is the Gaussian initial solution defined as it follows:
-
-\begin{align*}
-    u_0 &= \exp\left(-\frac{(x - \mu)^2}{\sigma}\right)
-\end{align*}
-
-with $\mu$ the mean and $\sigma$ the variance of the Gaussian distribution.
-
 The problem (1) represents a wave propagating with a constant velocity $a$ with an unchanged shape and has an analytical solution equal to: 
 
 $$
 u(t, x)=u_0(x, x-at)
 $$
 
+We have two initial conditions $u_0$ that we will be using:  
+\subsubsection*{Gaussian distribution}
+
+Defined as it follows:
+\begin{align*}
+    u_0 &= \exp\left(-\frac{(x - \mu)^2}{\sigma}\right)
+\end{align*}
+\\
+with $\mu$ the mean and $\sigma$ the variance of the Gaussian distribution.
+
+\subsubsection*{Rectangular function}
+
+Defined as it follows:
+\begin{align*}
+    u_0(x, A) = \begin{cases}
+    A, & \text{if } 0.25 \leq x \leq 0.75 \\
+    B, & \text{otherwise}
+    \end{cases}
+\end{align*}
+
+%AJOUTER IMAGE DES DEUX CONDITIONS INITIALES
 
 %25
 %describir el proceso de como se utilizan las redes d eneuronas para poder resolver especialmente esta ecuacion diferencial parcial
@@ -417,7 +432,7 @@ $$
 
 \subsubsection{Methodology}
 
-In our context t and x represent the time and space domains, we will train a neural network to approximate the solution of the PDE for all the discrtization points in step 
+In our context t and x represent the time and space domains, we will train a neural network to approximate the solution of the PDE for all the discrtization points in our domain 
 at each time step  by a multilayer feedforward neural network, we can do this by minimizing the error of the PDE in a certain number of points inside our domain.
 
 We are going to represent our neural network by $\overline{u_\theta}$ then we define our initial condition as $u_0$ and our boundary condition as $u_b$ then we define our $u\theta$ as follows:
@@ -428,11 +443,11 @@ $$
 
 We assume then that:
 
-$$\overline{u_\theta}(x,t)\approx u(x,t,\theta)$$ 
+$$\overline{u_\theta}(x,t,\theta)\approx u(x,t)$$ 
 
 Where $\theta$ is the set of parameters we want to optimize in order to minimize the error of the solution given by our neural network.
 It may seem strange to define the partial derivative of a neural network, but since the neural network's activation function is smooth and differentiable in our case we will be u
-using the \textbf{Tanh} activation fucntion, and we can derive it using automatic differentiation for any values of $x$ and $t$.
+using the \textbf{Tanh} activation function, we can derive it using automatic differentiation for any values of $x$ and $t$.
 
 %No se si esta bien 
 We look to minize $\theta$ in order to minimize the error of our neural network, we can do so by using  a stochastic gradient descent-type (SGD) algorithm to optimize the parameter $\theta$ just 
@@ -443,13 +458,48 @@ as the standard training of deep neural networks. In our numerical examples, we 
 \subsubsection{Convergence analysis}
 One of the goals for the implementation of the PINN theory is to investigate the convergence and stability of the computed $u_\theta$ to the exact solution of the problem. They are related to how well the NN learns from physical laws and data.
 
-\subsubsection{Error analysis}
+%PENDIENTEEEEEE
+% \subsubsection{Error analysis}
+% We will be using the Mean Square Error (MSE) to measure the error of our neural network, we will be using the following formula:
+
+% \begin{equation*}
+%     MSE_{u_{exact}}=\frac{1}{N_{u_{exact}}}\sum^{N_{u_{exact}}}_{i=1}|u(t_{u_{exact}}^i,x_{u_{exact}}^i)-\overline{u_\theta}(t_{u_{exact}}^i,x_{u_{exact}}^i)|^2
+% \end{equation*}
 
 \section{Implementation}
 Our main objective is to implement a solver that based on the Semi-Lagrangian scheme, and implementing the Deep Lagrange interpolation operator 
-using the $u_\theta$ function that will be approximated by a neural network that implements the PINNs strategy will solve the equation (1) for different initial conditions depending on the values of $\mu$ and $\sigma$.
+using the $u_\theta$ function that will be approximated by a neural network that implements the PINNs strategy will solve the equation (1) for different initial conditions depending on the values of $\mu$ and $\sigma$ for the Gaussian distribution and $A$ for the rectangular function. \\
+
+For this we specify the following parameters:
+
+\begin{itemize}
+    \item $nx$ the number of points in the space
+    \item $nt$ the number of points in the time
+    \item $a$ the velocity of the transport
+    \item $\Delta t$ the time step
+    \item $\Delta x$ the space step
+    \item $t_{min}$ the minimum time
+    \item $t_{max}$ the maximum time
+    \item $x_{min}$ the minimum space
+    \item $x_{max}$ the maximum space
+    \item $u_0$ the initial condition
+    \item $u$ the solution
+ \end{itemize}
 
 \subsection{Semi-Lagrangian solver}
+
+We create a class called \textbf{SemiLagrangianSolver} that contains the following methods:
+
+
+\begin{enumerate}
+   \item \textbf{$u_0$}: To compute the initial condition.
+   \item \textbf{explicit solution}: To compute the analytical solution
+   \item \textbf{find closest}: To find the $n_closests$ points to $x_{*}$
+   \item \textbf{li}: To compute the Lagrange interpolation basis polynomial at $x_{*}$
+   \item \textbf{solve}: To calculate the numerical solution for the problem using the Lagrange interpolation operator.
+   \item \textbf{plot solution}: To plot the solution at a specific time
+   \item \textbf{error solution}: To calculate the error of the numerical solution compared to the exact solution
+\end{enumerate}
 %Resumir lo que escribi en el otro lado... (puede esperar)
 
 
@@ -516,6 +566,40 @@ The training was done using the following parameters:
 \end{itemize}
 
 The best loss we obtained was: 7.80e-04 
+For exemple for an initial solution with mean=0.5 and variance = 0.035 we get the following approximation made by the network at different time steps:\\
+\begin{equation*}
+    u_0(x) = \exp^{\frac{-(x-0.5)^2}{0.035}}
+\end{equation*}
+
+\begin{figure}[!h]
+    \centering
+    \includegraphics[width=0.5\textwidth]{images/r1.png}
+    \caption{t=0}
+\end{figure}
+
+\begin{figure}[!h]
+    \centering
+    \includegraphics[width=0.5\textwidth]{images/r2.png}
+    \caption{t=0.25}
+\end{figure}
+
+\begin{figure}[!h]
+    \centering
+    \includegraphics[width=0.5\textwidth]{images/r3.png}
+    \caption{t=0.5}
+\end{figure}
+
+\begin{figure}[!h]
+    \centering
+    \includegraphics[width=0.5\textwidth]{images/r4.png}
+    \caption{t=0.75}
+\end{figure}
+
+\begin{figure}[!h]
+    \centering
+    \includegraphics[width=0.5\textwidth]{images/r5.png}
+    \caption{t=1}
+\end{figure}
 
 \subsection{Solving using deep interpolation}
 The following results were obtained using the following parameters:
@@ -530,22 +614,6 @@ The following results were obtained using the following parameters:
     \item $mean = 0.5$
     \item $variance = 0.035$
 \end{itemize}
-
-For exemple for an initial solution with mean=0.5 and variance = 0.035 we get the following approximation made by the network at different time steps:\\
-\newpage
-\begin{figure}[!h]
-    \centering
-    \includegraphics[width=0.5\textwidth]{images/r1.png}
-    \caption{t=0}
-    \includegraphics[width=0.5\textwidth]{images/r2.png}
-    \caption{t=0.25}
-    \includegraphics[width=0.5\textwidth]{images/r3.png}
-    \caption{t=0.5}
-    \includegraphics[width=0.5\textwidth]{images/r4.png}
-    \caption{t=0.75}
-    \includegraphics[width=0.5\textwidth]{images/r5.png}
-    \caption{t=1}
-\end{figure}
 
 We obtained the following errors calculated in L2 norm compared to the exact solution (in loglog scale) of the transport equation according to the initial condition defined by the Gaussian with the mean and the variance given in parameter at times tf/4 tf /2 and tf (with tf the final time)\\
 
@@ -566,6 +634,7 @@ The \textbf{SL classic} solution is obtained with the Semi-Lagrangian scheme and
 The solution \textbf{perturbed SL} is defined as the exact solution to which we add different perturbations $\epsilon + \cos(x)$, here is what we get:\\
 
 \newpage
+
 \begin{figure}[h]
     \centering
     \includegraphics[width=0.45\textwidth]{images/10ep11.png}
@@ -588,6 +657,8 @@ The solution \textbf{perturbed SL} is defined as the exact solution to which we 
     \caption{$nx = 20$}
 \end{figure}
 
+\newpage 
+
 \begin{figure}[h]
     \centering
     \includegraphics[width=0.45\textwidth]{images/ep11.png}
@@ -600,12 +671,6 @@ The solution \textbf{perturbed SL} is defined as the exact solution to which we 
 
 
 \subsection{Interpolation of order 3}
-% \begin{figure}[h]  % "h" stands for "here", indicating that you want the figure to be placed as close as possible to the current position in the text
-%     \centering
-%     \includegraphics[width=\textwidth]{image.jpg}  % Replace "image.jpg" with the filename of your image
-%     \caption{This is a caption for the image.}
-%     \label{fig:image-label}
-% \end{figure}
 
 The \textbf{SL classic} solution is obtained with the Semi-Lagrangian scheme and the classic Lagrange interpolation, \textbf{SL Deep} is calculated using this time the deep interpolation operator and $u_\theta $ as the solution given by the neural network, \textbf{Network} is the solution obtained by the network.\\
 
@@ -619,50 +684,64 @@ The \textbf{SL classic} solution is obtained with the Semi-Lagrangian scheme and
     \caption{$nx = 40$}
 \end{figure}
 
+\vspace{4cm}
+
 The solution \textbf{perturbed SL} is defined as the exact solution to which we add different perturbations $\epsilon + \cos(x)$, here is what we get:\\
 
 \begin{figure}[!h]
     \centering
-    \includegraphics[width=0.4\textwidth]{images/10ep21.png}
-    \includegraphics[width=0.4\textwidth]{images/10ep22.png}
-    \includegraphics[width=0.4\textwidth]{images/10ep23.png}
-    \includegraphics[width=0.4\textwidth]{images/10ep24.png}
-    \includegraphics[width=0.4\textwidth]{images/10ep25.png}
+    \includegraphics[width=0.49\textwidth]{images/10ep21.png}
+    \includegraphics[width=0.49\textwidth]{images/10ep22.png}
+    \includegraphics[width=0.49\textwidth]{images/10ep23.png}
+    \includegraphics[width=0.49\textwidth]{images/10ep24.png}
+    \includegraphics[width=0.49\textwidth]{images/10ep25.png}
     \caption{$nx = 10$}
 \end{figure}
-\begin{figure}[!h]
+
+\newpage 
+
+\begin{figure}[htbp]
     \centering
-    \includegraphics[width=0.4\textwidth]{images/20ep21.png}
-    \includegraphics[width=0.4\textwidth]{images/20ep22.png}
-    \includegraphics[width=0.4\textwidth]{images/20ep23.png}
-    \includegraphics[width=0.4\textwidth]{images/20ep24.png}
-    \includegraphics[width=0.4\textwidth]{images/20ep25.png}
+    \includegraphics[width=0.49\textwidth]{images/20ep21.png}
+    \includegraphics[width=0.49\textwidth]{images/20ep22.png}
+    \includegraphics[width=0.49\textwidth]{images/20ep23.png}
+    \includegraphics[width=0.49\textwidth]{images/20ep24.png}
+    \includegraphics[width=0.49\textwidth]{images/20ep25.png}
     \caption{$nx = 20$}
 \end{figure}
+
 \begin{figure}[!h]
     \centering
-    \includegraphics[width=0.4\textwidth]{images/ep21.png}
-    \includegraphics[width=0.4\textwidth]{images/ep22.png}
-    \includegraphics[width=0.4\textwidth]{images/ep23.png}
-    \includegraphics[width=0.4\textwidth]{images/ep24.png}
-    \includegraphics[width=0.4\textwidth]{images/ep25.png}
+    \includegraphics[width=0.48\textwidth]{images/ep21.png}
+    \includegraphics[width=0.48\textwidth]{images/ep22.png}
+    \includegraphics[width=0.48\textwidth]{images/ep23.png}
+    \includegraphics[width=0.48\textwidth]{images/ep24.png}
+    \includegraphics[width=0.48\textwidth]{images/ep25.png}
     \caption{$nx = 40$}
 \end{figure}
 
+
+\newlength{\customspace}
+\setlength{\customspace}{2em}
+\hspace{\customspace} 
 \newpage
 
 \subsection{Average gain}
 
-By randomly drawing 20 parameters for the mean and the variance to have different initial conditions, we calculate for each the solution with the classic and deep Semi-Lagrangian method and we look at the $gain=SL error/deep SL error$ by doing the average over the 20 parameters.
+By randomly drawing 20 parameters for the mean and the variance to have different initial conditions, we calculate for each the solution with the classic and deep Semi-Lagrangian method and we look at the gain=SL error/deep SL error by doing the average over the 20 parameters.\newline 
 
 By making several draws of 20 parameters, the following average gains are obtained:
 
-For a 1st order interpolation: 137.7119541688143, 97.15674818809492, 185.7843283662372
+- For a 1st order interpolation: 137.7119541688143, 97.15674818809492, 185.7843283662372
 
-For an interpolation of order 3: 7.608668520339034, 3.1395029764283313,4.496461973620286
+- For an interpolation of order 3: 7.608668520339034, 3.1395029764283313,4.496461973620286
 
-\newpage
+Then we can see that the gain is considerable when we use the deep interpolation operator, it is much less when we use the classic interpolation operator.\\
+
+
+
 \section{Conclusions}
+
 
 \section{Bibliography}
 % \bibitem[label]{1} {Scientific Machine Learning Through Physics–Informed Neural Networks: Where we are and What’s Next}
