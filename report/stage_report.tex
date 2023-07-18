@@ -468,51 +468,18 @@ One of the goals for the implementation of the PINN theory is to investigate the
 
 \section{Implementation}
 Our main objective is to implement a solver that based on the Semi-Lagrangian scheme, and implementing the Deep Lagrange interpolation operator 
-using the $u_\theta$ function that will be approximated by a neural network that implements the PINNs strategy will solve the equation (1) for different initial conditions depending on the values of $\mu$ and $\sigma$ for the Gaussian distribution and $A$ for the rectangular function. \\
-
-For this we specify the following parameters:
-
-\begin{itemize}
-    \item $nx$ the number of points in the space
-    \item $nt$ the number of points in the time
-    \item $a$ the velocity of the transport
-    \item $\Delta t$ the time step
-    \item $\Delta x$ the space step
-    \item $t_{min}$ the minimum time
-    \item $t_{max}$ the maximum time
-    \item $x_{min}$ the minimum space
-    \item $x_{max}$ the maximum space
-    \item $u_0$ the initial condition
-    \item $u$ the solution
- \end{itemize}
-
-\subsection{Semi-Lagrangian solver}
-
-We create a class called \textbf{SemiLagrangianSolver} that contains the following methods:
-
-
-\begin{enumerate}
-   \item \textbf{$u_0$}: To compute the initial condition.
-   \item \textbf{explicit solution}: To compute the analytical solution
-   \item \textbf{find closest}: To find the $n_closests$ points to $x_{*}$
-   \item \textbf{li}: To compute the Lagrange interpolation basis polynomial at $x_{*}$
-   \item \textbf{solve}: To calculate the numerical solution for the problem using the Lagrange interpolation operator.
-   \item \textbf{plot solution}: To plot the solution at a specific time
-   \item \textbf{error solution}: To calculate the error of the numerical solution compared to the exact solution
-\end{enumerate}
-%Resumir lo que escribi en el otro lado... (puede esperar)
-
+using the $u_\theta$ function that will be approximated by a neural network that implements the PINNs strategy will solve the equation (1) for different initial conditions depending on the values of $\mu$ and $\sigma$ for the Gaussian distribution and $A$ for the rectangular function.
 
 \subsection{PINNs code}
 
 We implement a Python code to approximate  $u_\theta$ that in our case is equal to the solution of the PDE, by using the PINNs strategy, for this we will be using the library PyTorch for machine learning.
 The aim is to achieve a trained Neural Network that can give the output $u\theta(x, t)$, where x and t are set as inputs that satisfy Eq. (1). 
 
-This PDE has an analytical exact solution which is $u(x,t) = u_0(x,x-ut)$, where $u_0$ is the initial condition that we define $u_0(x) = \exp(-(x-\mu)^2/\sigma)$ where $\mu$ is the mean and $\sigma$ is the variance of the Gaussian distribution. 
+This PDE has an analytical exact solution which is $u(x,t) = u_0(x,x-at)$, where $u_0$ is the initial condition.
 
-The fundamental concept is that by performing a forward pass through the network using the independent variables as inputs, one can obtain the corresponding evaluated dependent variables.
+The fundamental concept is that by performing a forward pass through the network using the independent variables as inputs, we can obtain the corresponding evaluated dependent variables.
 Since PINNs are derivable, we can compute the dependent variables (outputs). The dependent variables (inputs) to calculate the different derivatives that appear in the original PDEs. We create a loss function that fits the PDEs with this derivative throughout the training phase. 
-We will assume that our PINNs solve the PDEs if the loss function approaches a near-zero value. The training can be done in both an unsupervised and supervised setting.\\
+We will assume that our PINNs solve the PDEs if the loss function approaches a near-zero value, the training can be done in both an unsupervised and supervised setting.\\
 
 %NO ES UN BUEN LUGAR ACOMODAR
 % We define the collocation and the data points, each of which would have a separate loss function that will be added together to form the total loss function.
@@ -524,49 +491,114 @@ We will assume that our PINNs solve the PDEs if the loss function approaches a n
 %There are two approcahes to solve the PDEs using PINNs, the first one is Data-Driven and the othe rone is model based 
 %Explicar por encima cada function y solo poner las mas importantes
 %Description of the code implementation with some code snippets and explanations of the most important parts of the code.
-\subsubsection{ Neural Network Class}
+
+\subsubsection{Neural Network Class}
 
 The Net class represents a neural network model. It inherits from nn.DataParallel, which is a PyTorch module used for parallelizing the computation on multiple GPUs.
-Our neural network contains 6 fully connected layers, an input layer that expects four input features x, t, mean, and variance, five hidden layers, each consisting of fully connected linear units (nn.Linear) followed by the hyperbolic tangent activation function (torch.tanh). The hidden layers progressively reduce the input dimensions and extract higher-level features from the input data, 
+Our neural network contains 6 fully connected layers, an input layer that expects four or three input features x, t, mean, and variance/ A according to the initial condition, and five hidden layers, each consisting of fully connected linear units (nn.Linear) followed by the hyperbolic tangent activation function (torch.tanh). The hidden layers progressively reduce the input dimensions and extract higher-level features from the input data, 
 and finally the output layer that consists of a single fully connected linear unit (nn.Linear) without an activation function. It maps the output of hidden layer5 to a single output value.
 
-The \textbf{forward} method defines the forward pass of the neural network, where the input tensors propagate through the layers in a sequential manner, applying the specified operations and activation functions. The resulting output is returned as the final output of the network.
+\subsubsection*{The forward method} Defines the forward pass of the neural network, where the input tensors propagate through the layers in a sequential manner, applying the specified operations and activation functions. The resulting output is returned as the final output of the network.
 
-% - `forward(x, t, mean, variance)`: This method defines the forward pass of the neural network. It takes input tensors x, t, mean, and variance, and applies a sequence of operations to produce the output of the network. The input tensors are concatenated ant the concatenated tensor is then passed through each hidden layer, with a non-linear activation function (tanh) applied after each layer. Finally, the output layer produces the final output of the network.
+\subsubsection*{The networkBC method} Serves to impose the hard boundary condition, so when $t=0$ we get that the solution at that time is equal to the initial solution. 
 
-The \textbf{networkBC} This method serves to impose the hard boundary condition, so when $t=0$ we get that the solution at that time is equal to the initial solution. 
+\subsubsection{Parameters class} This class defines the set of parameters for the PINN class including the initial condition $u_0$ defined as a Gaussian distribution or a rectangular function.
+\subsubsection{Network class} The Network class represents a \textbf{PINN} model.
+\begin{enumerate}
+    \item \textbf{\_\_init\_\_(param: Parameters)}: Initializes the neural network model and loads the model if available.
 
-\subsubsection{Parameters class}
+    \item \textbf{\_\_call\_\_(*args)}: Calls the network and returns the output.
+    
+    \item \textbf{create\_network()}: Creates the neural network model from the prevously defined Net class.
+    
+    \item \textbf{load(file\_name)}: Loads the model from a file. 
+    
+    \item \textbf{save(file\_name, epoch, net\_state, optimizer\_state, loss, loss\_history)}: Saves the model with the specific values passed as arguments into a file.
+    
+    \item \textbf{pde(x, t, mean, variance)}: Computes the PDE using the network and returns the result.
+    
+    \item \textbf{predict\_u\_from\_torch(x, t, mean, variance)}: Predicts the value of the solution given by the neural network based on the input variables $x$, $t$, \texttt{mean}, and \texttt{variance} or $A$
+    
+    \item \textbf{random(min\_value, max\_value, shape, requires\_grad=False, device=device)}: Generates random numbers within a range.
+    
+    \item \textbf{make\_data(n\_data)}: Generates the data of size \texttt{n\_data} for the training process based on the exact solution of the PDE.
+    
+    \item \textbf{make\_collocation(n\_collocation)}: Generates \texttt{n\_collocation} collocation points to enforce PDE constraints during training.
+    
+    \item \textbf{train(epochs, n\_collocation, n\_data)}: Trains the neural network using a combination of PDE constraints and data fitting.
+    
+    \item \textbf{u\_exact(x, t, a, xmax, u0, mean, variance, device=device)}: Computes the exact solution for the PDE.
+    
+    \item \textbf{plot(t, mean, variance)}: Plots the loss history, predicted solution, and prediction error at the input variables $x$, $t$, \texttt{mean}, and \texttt{variance}.
 
-This class defines the set of parameters for the PINN classn including the initial condition $u_0$ 
+\end{enumerate}
 
-\subsubsection{Network class}
+\subsubsection{Optimization step}
 
-The Network class represents a PINN.
+The \textbf{train} function implements an optimization method for training a neural network by combining PDE constraints and data fitting. It iterates over a number of epochs to update the network's weights and minimize the loss.
 
+% Within each epoch, the optimizer's gradients are reset to zero. The overall loss is set to zero to accumulate the losses from different components.
 
-\subsubsection{Optimization code}
+If there are collocation points specified, PDE constraints are enforced, collocation points are generated, and the network's output for these points is computed. Then the MSE loss is calculated between the network's output and a tensor of zeros, and this loss is added to the overall loss.
 
-The minimization process of the loss function is called training;
-%decrire le processus de minimisation de la fonction de perte
+Similarly, if there are training data points specified, data fitting is performed, the raining data is generated, and then using the NN's prediction of the solution based on the input variables, then the MSE loss is computed between the predicted solution and the exact solution, and this loss is added to the overall loss.
+
+Additional loss terms are incorporated to enforce PDE constraints and boundary conditions. The network's solution is evaluated at the boundary points and compared to the boundary values to enforce periodicity in both spatial and temporal dimensions, then the loss is added to the overall loss.
+
+Backpropagation is then performed to compute the gradients, and the weights of the neural network are updated using the gradient descent algorithm.
+
+Throughout the training process, the current loss is recorded in the loss history and the model and optimizer states, as well as the loss history, are saved for further analysis. Upon completion of all epochs, the best model is saved.
+
+\subsection{Semi-Lagrangian solver}
+
+We define a class called \textbf{SemiLagrangianSolver} that contains the following methods:
+
+\begin{enumerate}
+   \item \textbf{$u_0$}: To compute the initial condition.
+   \item \textbf{explicit solution}: To compute the analytical solution
+   \item \textbf{find closest}: To find the $n_{closests}$ points to $x_{*}$
+   \item \textbf{li}: To compute the Lagrange interpolation basis polynomial at $x_{*}$
+   \item \textbf{solver}: To calculate the numerical solution for the problem using the Lagrange interpolation operator.
+   \item \textbf{plot solution}: To plot the solution at a specific time
+   \item \textbf{error solution}: To calculate the error of the numerical solution compared to the exact solution
+   \item \textbf{u theta}  The $u_{\Theta}$ solution found by the neural network.
+   \item \textbf{solver deep} to calculate the solution of the transport equation using the Deep Lagrange Interpolation and $u_{\Theta}$.
+   \item \textbf{plot solution deep} to plot the solution deep at a specific time
+   \item \textbf{error solution deep} to calculate the error of the numerical deep solution compared to the exact solution
+\end{enumerate}
+
+And the following parameters: 
+
+\begin{itemize}
+    \item[--] $nx$ the number of points in the space
+    \item[--] $nt$ the number of points in the time
+    \item[--] $a$ the velocity of the transport
+    \item[--] $\Delta t$ the time step
+    \item[--] $\Delta x$ the space step
+    \item[--] $t_{min}$ the minimum time
+    \item[--] $t_{max}$ the maximum time
+    \item[--] $x_{min}$ the minimum space
+    \item[--] $x_{max}$ the maximum space
+    \item[--] $u_0$ the initial condition
+    \item[--] $u$ the solution
+ \end{itemize}
 
 \section{Results}
 Here we present the results of the PINNs implementation, we will show the results of the unsupervised and supervised learning, we will also show the results of the deep interpolation method.
 
 \subsection{Finding $u_\theta$ using PINNs}
 
-\subsubsection{Unsupervised and supervised learning}
+In the following figures we show the results of the PINNs implementation, we will show the results of the unsupervised and supervised learning.\\
 
 The training was done using the following parameters:
 
 \begin{itemize}
-   \item epocs = 40000
-   \item ncollocation = 50000
-   \item ndata = 10000
-\end{itemize}
+   \item[--] epocs = 40000
+   \item[--] ncollocation = 50000
+   \item[--] ndata = 10000
+\end{itemize}The best loss we obtained was: \textbf{7.80e-04} \\
+For an initial solution with mean=0.5 and variance = 0.035 we get the following approximation made by the network at different time steps:\\
 
-The best loss we obtained was: 7.80e-04 
-For exemple for an initial solution with mean=0.5 and variance = 0.035 we get the following approximation made by the network at different time steps:\\
 \begin{equation*}
     u_0(x) = \exp^{\frac{-(x-0.5)^2}{0.035}}
 \end{equation*}
@@ -599,20 +631,29 @@ For exemple for an initial solution with mean=0.5 and variance = 0.035 we get th
     \centering
     \includegraphics[width=0.5\textwidth]{images/r5.png}
     \caption{t=1}
-\end{figure}
+\end{figure} 
+
+For an initial solution defined by the following rectangular function:
+
+\begin{equation*}
+    u_0(x) = \begin{cases}
+    0.6 & \text{if } 0.25 \leq x \leq 0.75\\
+    0.3 & \text{otherwise}
+    \end{cases}
+\end{equation*} We obtained the following predictions:
 
 \subsection{Solving using deep interpolation}
 The following results were obtained using the following parameters:
 
 \begin{itemize}
-    \item $xmin = 0.0$
-    \item $xmax = 1.0$
-    \item $tmin = 0.0$
-    \item $tf = 1.0$
-    \item $nt = 100$
-    \item $a = 1$
-    \item $mean = 0.5$
-    \item $variance = 0.035$
+    \item[--]$xmin = 0.0$
+    \item[--] $xmax = 1.0$
+    \item[--] $tmin = 0.0$
+    \item[--] $tf = 1.0$
+    \item[--] $nt = 100$
+    \item[--] $a = 1$
+    \item[--] $mean = 0.5$
+    \item[--] $variance = 0.035$
 \end{itemize}
 
 We obtained the following errors calculated in L2 norm compared to the exact solution (in loglog scale) of the transport equation according to the initial condition defined by the Gaussian with the mean and the variance given in parameter at times tf/4 tf /2 and tf (with tf the final time)\\
