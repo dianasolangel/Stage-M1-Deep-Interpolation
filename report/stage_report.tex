@@ -27,8 +27,8 @@
 \begin{document}
 \begin{titlepage}
 \begin{figure} 
-% \includegraphics[width=0.4\textwidth]{images/cnrslogo.jpeg}
 \includegraphics[width=0.4\textwidth]{images/inria.png}
+\includegraphics[width=0.4\textwidth]{images/cnrslogo.jpeg}
     \centering
 \end{figure}
 
@@ -36,7 +36,7 @@
 \title{}\author{}\date{}
 \centering
 \vspace{3cm}
-{\bfseries\LARGE INRIA \par} %CNRS Alsace delegation - 
+{\bfseries\LARGE INRIA - CNRS Alsace delegation\par}
 \vspace{4cm}
 {\bfseries\LARGE Training augmented interpolation \par}
 \vspace{1cm}
@@ -56,9 +56,6 @@
 \maketitle
 \tableofcontents 
 \newpage
-
-
-
 
 
 
@@ -267,7 +264,7 @@ they are deep-learning networks that, given an input point in the integration do
 The basic concept behind PINN training is that it can be thought of as an unsupervised strategy that does not require labelled data, such as results from prior simulations or experiments.
 It works by integrating the mathematical model into the network and reinforcing the loss function with a residual term from the governing equation, which acts as a penalizing term to restrict the space of acceptable solutions.
 
-PINN can be viewed as an unsupervised learning approach when they are trained solely using physical equations and boundary conditions for forward problems; however, for inverse problems or when some physical properties are derived from data that may be noisy, PINNs can be considered supervised learning when they are trained using the data from the calculation of the exact solution of the PDE.
+PINNs can be viewed as an unsupervised learning approach when they are trained solely using physical equations and boundary conditions for forward problems; however, for inverse problems or when some physical properties are derived from data that may be noisy, PINNs can be considered supervised learning when they are trained using the data from the calculation of the exact solution of the PDE.
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.5\textwidth]{images/pinns}
@@ -415,15 +412,15 @@ Defined as it follows:
 \\
 with $\mu$ the mean and $\sigma$ the variance of the Gaussian distribution.
 
-\subsubsection*{Rectangular function}
+% \subsubsection*{Rectangular function} AUN NO SEGURO 
 
-Defined as it follows:
-\begin{align*}
-    u_0(x, A) = \begin{cases}
-    A, & \text{if } 0.25 \leq x \leq 0.75 \\
-    B, & \text{otherwise}
-    \end{cases}
-\end{align*}
+% Defined as it follows:
+% \begin{align*}
+%     u_0(x, A) = \begin{cases}
+%     A, & \text{if } 0.25 \leq x \leq 0.75 \\
+%     B, & \text{otherwise}
+%     \end{cases}
+% \end{align*}
 
 \subsubsection{Parametric PINNs}
 
@@ -579,7 +576,7 @@ We define a class called \textbf{SemiLagrangianSolver} that contains the followi
    \item \textbf{error solution deep} to calculate the error of the numerical deep solution compared to the exact solution
 \end{enumerate}
 
-And the following parameters: 
+\subsubsection*{And the following parameters:}
 
 \begin{itemize}
     \item[--] $nx$ the number of points in the space
@@ -620,25 +617,44 @@ This means that we will be learning the solution of the transport equation in th
 
 \subsubsection{Unsupervised learning}
 
-% \subsubsection*{Error analysis}
+For the unsupervised approach we trained our NN with 40.000 epochs and 50.000 collocation points, the best loss we obtained was: \textbf{3.21e-04} \\
 
-%For different number of epochs the error of the NN in L2 norm is shown in the following table:
-%for different nimber of points depending on the case and all shown in the table 
-% \begin{tabularx}{0.8\textwidth} { 
-%     | >{\raggedright\arraybackslash}X 
-%     | >{\centering\arraybackslash}X 
-%     | >{\raggedleft\arraybackslash}X | }
-%    \hline
-%    item 11 & item 12 & item 13 \\
-%    \hline
-%    item 21  & item 22  & item 23  \\
-%   \hline
-% \end{tabularx}
+With a Gaussian initial condition with mean $\mu = 0.48$ and variance $\sigma^2 = 0.42$ we get the following approximation made by the network at different time steps:\\
+\begin{figure}[!h]
+    \centering
+    \includegraphics[width=0.5\textwidth]{images/nsup1.png}
+    \caption{t=0}
+\end{figure}
+\newpage
+\begin{figure}[!h]
+    \centering
+    \includegraphics[width=0.5\textwidth]{images/nsup2.png}
+    \caption{t=0.25}
+\end{figure}
 
+\begin{figure}[!h]
+    \centering
+    \includegraphics[width=0.5\textwidth]{images/nsup3.png}
+    \caption{t=0.5}
+% \end{figure}
+% \begin{figure}[!h]
+%     \centering
+    \includegraphics[width=0.5\textwidth]{images/nsup4.png}
+    \caption{t=0.75}
+% \end{figure}
+% \begin{figure}[!h]
+%     \centering
+    \includegraphics[width=0.5\textwidth]{images/nsup5.png}
+    \caption{t=1}
+\end{figure} 
+
+
+We can clearly see that by trainning our NN with collocation points it does not learn quite well all the detail of our solution. 
 
 \subsubsection{Supervised learning}
 For the supervised approach we trained our NN with 40.000 epochs and 15.000 data points, the best loss we obtained was: \textbf{3.76e-04} \\
-Weith a Gaussian initial condition with mean $\mu = 0.49$ and variance $\sigma^2 = 0.04$ we get the following approximation made by the network at different time steps:\\
+
+With a Gaussian initial condition with mean $\mu = 0.49$ and variance $\sigma^2 = 0.04$ we get the following approximation made by the network at different time steps:\\
 
 \begin{figure}[!h]
     \centering
@@ -678,22 +694,18 @@ For 15.000 data points and different number of epochs the error of the NN is sho
     \textbf{Epochs} & \textbf{Error} \\ \hline
     1000            & 7.28e-01     \\ \hline
     5000            & 2.86e-02      \\ \hline
-    10000           & 4.12e-03      \\ \hline
+    10000           & 4.12e-03      \\ \hline   
     20000           & 1.95e-03       \\ \hline
     30000           & 1.25e-03        \\ \hline
     40000           & 3.76e-04       \\ \hline
     \end{tabular}
     \caption{Error of the NN prediction in for different number of epochs}
     \label{tab:my-table}
-
 \end{table}
-
 \subsubsection{Supervised and unsupervised learning}
-
 In the following figures we show the results of the PINNs implementation, we will show the results of the unsupervised and supervised learning.\\
 
 The training was done using the following parameters:
-
 \begin{itemize}
    \item[--] epocs = 40000
    \item[--] ncollocation = 50000
@@ -788,19 +800,19 @@ The \textbf{SL classic} solution is obtained with the Semi-Lagrangian scheme and
 
 \begin{figure}[!h]
     \centering
-    \includegraphics[width=0.4\textwidth]{images/i110.png}
+    \includegraphics[width=0.45\textwidth]{images/i110.png}
     \caption{nx = 10}
 \end{figure}
 
 \begin{figure}[!h]
     \centering
-    \includegraphics[width=0.4\textwidth]{images/i120.png}
+    \includegraphics[width=0.45\textwidth]{images/i120.png}
     \caption{nx = 20}
 \end{figure}
 
 \begin{figure}[!h]
     \centering
-    \includegraphics[width=0.4\textwidth]{images/i1.png}
+    \includegraphics[width=0.45\textwidth]{images/i1.png}
     \caption{nx = 40}
 \end{figure}
 
@@ -812,25 +824,31 @@ The solution \textbf{perturbed SL} is defined as the exact solution to which we 
     \centering
     \includegraphics[width=0.45\textwidth]{images/10ep11.png}
     \includegraphics[width=0.45\textwidth]{images/10ep12.png}
+\end{figure}
+\begin{figure}[!h]
+    \centering 
     \includegraphics[width=0.45\textwidth]{images/10ep13.png}
     \includegraphics[width=0.45\textwidth]{images/10ep14.png}
     \includegraphics[width=0.45\textwidth]{images/10ep15.png}
     \caption{$nx = 10$}
 \end{figure}
 
-\newpage
+\begin{figure}[!h]
+    \centering
+    \includegraphics[width=0.42\textwidth]{images/20ep11.png}
+    \includegraphics[width=0.42\textwidth]{images/20ep12.png}
+    \includegraphics[width=0.42\textwidth]{images/20ep13.png}
+\end{figure}
 
 \begin{figure}[!h]
     \centering
-    \includegraphics[width=0.45\textwidth]{images/20ep11.png}
-    \includegraphics[width=0.45\textwidth]{images/20ep12.png}
     \includegraphics[width=0.45\textwidth]{images/20ep13.png}
     \includegraphics[width=0.45\textwidth]{images/20ep14.png}
     \includegraphics[width=0.45\textwidth]{images/20ep15.png}
     \caption{$nx = 20$}
 \end{figure}
 
-
+\newpage
 \begin{figure}[!h]
     \centering
     \includegraphics[width=0.45\textwidth]{images/ep11.png}
@@ -841,7 +859,6 @@ The solution \textbf{perturbed SL} is defined as the exact solution to which we 
     \caption{$nx = 40$}
 \end{figure}
 
-\newpage
 
 \subsection{Interpolation of order 3}
 
@@ -849,11 +866,16 @@ The \textbf{SL classic} solution is obtained with the Semi-Lagrangian scheme and
 
 \begin{figure}[!h]
     \centering
-    \includegraphics[width=0.5\textwidth]{images/i310.png}
+    \includegraphics[width=0.45\textwidth]{images/i310.png}
     \caption{$nx = 10$}
-    \includegraphics[width=0.5\textwidth]{images/i320.png}
+\end{figure}
+\newpage 
+
+\begin{figure}[!h]
+    \includegraphics[width=0.45\textwidth]{images/i320.png}
     \caption{$nx = 20$}
-    \includegraphics[width=0.5\textwidth]{images/i3.png}
+
+    \includegraphics[width=0.45\textwidth]{images/i3.png}
     \caption{$nx = 40$}
 \end{figure}
 
@@ -870,8 +892,6 @@ The solution \textbf{perturbed SL} is defined as the exact solution to which we 
     \includegraphics[width=0.49\textwidth]{images/10ep25.png}
     \caption{$nx = 10$}
 \end{figure}
-
-\newpage 
 
 \begin{figure}[htbp]
     \centering
@@ -915,8 +935,8 @@ Then we can see that the gain is considerable when we use the deep interpolation
 
 \section{Conclusions}
 
+We have seen that the deep interpolation operator is much more efficient than the classic interpolation operator, it is also more robust to perturbations.\\
 
-\section{Bibliography}
 % \bibitem[label]{1} {Scientific Machine Learning Through Physics–Informed Neural Networks: Where we are and What’s Next}
 % Salvatore Cuomo1 · Vincenzo Schiano Di Cola2 · Fabio Giampaolo1 · Gianluigi Rozza3 · Maziar Raissi4 · Francesco Piccialli1
 % 26 July 2022
@@ -927,25 +947,26 @@ Then we can see that the gain is considerable when we use the deep interpolation
 % \bibiitem[label]{5} {What is a feedforward neural network?} {https://www.ibm.com/cloud/learn/feedforward-neural-network}
 % \bibiitem[label]{6} {Multilayer Perceptron Explained with a Real-Life Example and Python Code} {https://towardsdatascience.com/multilayer-perceptron-explained-with-a-real-life-example-and-python-code-sentiment-analysis-cb408ee93141}
 % \bibiitem[label]{7} {https://www.pnas.org/doi/full/10.1073/pnas.1718942115}
-% \begin{thebibliography}{9} % Use a number larger than the total number of references (e.g., 9 in this case)
+\begin{thebibliography}{9}
 
-%     \bibitem{1} Cuomo, S., Di Cola, V. S., Giampaolo, F., Rozza, G., Raissi, M., & Piccialli, F. (2022). Scientific Machine Learning Through Physics–Informed Neural Networks: Where we are and What’s Next. Retrieved July 26, 2022.
+    \bibitem{1} Cuomo, S., Di Cola, V. S., Giampaolo, F., Rozza, G., Raissi, M., \& Piccialli, F. (2022). Scientific Machine Learning Through Physics–Informed Neural Networks: Where we are and What’s Next. Retrieved July 26, 2022.
     
-%     \bibitem{2} IBM Cloud Blog. (n.d.). Supervised vs. Unsupervised Learning: What’s the Difference? Retrieved from \url{https://www.ibm.com/cloud/blog/supervised-vs-unsupervised-learning}
+    \bibitem{2} IBM Cloud Blog. (n.d.). Supervised vs. Unsupervised Learning: What’s the Difference? Retrieved from \url{https://www.ibm.com/cloud/blog/supervised-vs-unsupervised-learning}
     
-%     \bibitem{3} IBM. (n.d.). What are neural networks? Retrieved from \url{https://www.ibm.com/topics/neural-networks}
+    \bibitem{3} IBM. (n.d.). What are neural networks? Retrieved from \url{https://www.ibm.com/topics/neural-networks}
     
-%     \bibitem{4} DeepAI. (n.d.). Feed Forward Neural Network. Retrieved from \url{https://deepai.org/machine-learning-glossary-and-terms/feed-forward-neural-network}
+    \bibitem{4} DeepAI. (n.d.). Feed Forward Neural Network. Retrieved from \url{https://deepai.org/machine-learning-glossary-and-terms/feed-forward-neural-network}
     
-%     \bibitem{5} IBM Cloud. (n.d.). What is a feedforward neural network? Retrieved from \url{https://www.ibm.com/cloud/learn/feedforward-neural-network}
+    \bibitem{5} IBM Cloud. (n.d.). What is a feedforward neural network? Retrieved from \url{https://www.ibm.com/cloud/learn/feedforward-neural-network}
     
-%     \bibitem{6} Towards Data Science. (n.d.). Multilayer Perceptron Explained with a Real-Life Example and Python Code: Sentiment Analysis. Retrieved from \url{https://towardsdatascience.com/multilayer-perceptron-explained-with-a-real-life-example-and-python-code-sentiment-analysis-cb408ee93141}
+    \bibitem{6} Towards Data Science. (n.d.). Multilayer Perceptron Explained with a Real-Life Example and Python Code: Sentiment Analysis. Retrieved from: \newline
+    \url{https://towardsdatascience.com/multilayer-perceptron-explained-} \url{
+    with-a-real-life-example-and-python-code-sentiment-analysis-cb408ee93141}
     
-%     \bibitem{7} \textit{Proceedings of the National Academy of Sciences} (PNAS). (n.d.). Retrieved from \url{https://www.pnas.org/doi/full/10.1073/pnas.1718942115}
+    \bibitem{7} \textit{Proceedings of the National Academy of Sciences} (PNAS). (n.d.). Retrieved from \url{https://www.pnas.org/doi/full/10.1073/pnas.1718942115}
     
-% \end{thebibliography}
-    
-
+\end{thebibliography}
 
 \end{document}
+
 
