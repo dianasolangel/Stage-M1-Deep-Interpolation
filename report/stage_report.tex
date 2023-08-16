@@ -851,8 +851,13 @@ The solution \textbf{perturbed SL} is defined as the exact solution to which we 
 \newpage
 \begin{figure}[!h]
     \centering
-    \includegraphics[width=0.45\textwidth]{images/ep11.png}
-    \includegraphics[width=0.45\textwidth]{images/ep12.png}
+    \includegraphics[width=0.4\textwidth]{images/ep11.png}
+    \includegraphics[width=0.4\textwidth]{images/ep12.png}
+    \includegraphics[width=0.4\textwidth]{images/ep13.png}
+\end{figure}
+
+\begin{figure}[!h]
+    \centering
     \includegraphics[width=0.45\textwidth]{images/ep13.png}
     \includegraphics[width=0.45\textwidth]{images/ep14.png}
     \includegraphics[width=0.45\textwidth]{images/ep15.png}
@@ -872,46 +877,57 @@ The \textbf{SL classic} solution is obtained with the Semi-Lagrangian scheme and
 \newpage 
 
 \begin{figure}[!h]
+    \centering
     \includegraphics[width=0.45\textwidth]{images/i320.png}
     \caption{$nx = 20$}
-
     \includegraphics[width=0.45\textwidth]{images/i3.png}
     \caption{$nx = 40$}
 \end{figure}
 
-\vspace{4cm}
+% \vspace{4cm}
 
 The solution \textbf{perturbed SL} is defined as the exact solution to which we add different perturbations $\epsilon + \cos(x)$, here is what we get:\\
 
 \begin{figure}[!h]
     \centering
-    \includegraphics[width=0.49\textwidth]{images/10ep21.png}
-    \includegraphics[width=0.49\textwidth]{images/10ep22.png}
-    \includegraphics[width=0.49\textwidth]{images/10ep23.png}
-    \includegraphics[width=0.49\textwidth]{images/10ep24.png}
-    \includegraphics[width=0.49\textwidth]{images/10ep25.png}
+    \includegraphics[width=0.45\textwidth]{images/10ep21.png}
+    \includegraphics[width=0.45\textwidth]{images/10ep22.png}
+\end{figure}
+\begin{figure}[!h]
+    \centering
+    \includegraphics[width=0.45\textwidth]{images/10ep23.png}
+    \includegraphics[width=0.45\textwidth]{images/10ep24.png}
+    \includegraphics[width=0.45\textwidth]{images/10ep25.png}
     \caption{$nx = 10$}
 \end{figure}
 
-\begin{figure}[htbp]
+\begin{figure}[!h]
     \centering
-    \includegraphics[width=0.49\textwidth]{images/20ep21.png}
-    \includegraphics[width=0.49\textwidth]{images/20ep22.png}
-    \includegraphics[width=0.49\textwidth]{images/20ep23.png}
-    \includegraphics[width=0.49\textwidth]{images/20ep24.png}
-    \includegraphics[width=0.49\textwidth]{images/20ep25.png}
+    \includegraphics[width=0.42\textwidth]{images/20ep21.png}
+    \includegraphics[width=0.42\textwidth]{images/20ep22.png}
+    \includegraphics[width=0.42\textwidth]{images/20ep23.png}
+\end{figure}
+
+\begin{figure}[!h]
+    \centering
+    \includegraphics[width=0.45\textwidth]{images/20ep24.png}
+    \includegraphics[width=0.45\textwidth]{images/20ep25.png}
     \caption{$nx = 20$}
 \end{figure}
 
 \begin{figure}[!h]
     \centering
-    \includegraphics[width=0.48\textwidth]{images/ep21.png}
-    \includegraphics[width=0.48\textwidth]{images/ep22.png}
-    \includegraphics[width=0.48\textwidth]{images/ep23.png}
-    \includegraphics[width=0.48\textwidth]{images/ep24.png}
-    \includegraphics[width=0.48\textwidth]{images/ep25.png}
-    \caption{$nx = 40$}
+    \includegraphics[width=0.45\textwidth]{images/ep21.png}
+    \includegraphics[width=0.45\textwidth]{images/ep22.png}
+    \includegraphics[width=0.45\textwidth]{images/ep23.png}
+    \includegraphics[width=0.45\textwidth]{images/ep24.png}
+    \includegraphics[width=0.42\textwidth]{images/ep25.png}
 \end{figure}
+% \begin{figure}[!h]
+%     \centering
+%     \includegraphics[width=0.42\textwidth]{images/ep25.png}
+%     \caption{$nx = 40$}
+% \end{figure}
 
 
 \newlength{\customspace}
@@ -925,9 +941,9 @@ By randomly drawing 20 parameters for the mean and the variance to have differen
 
 By making several draws of 20 parameters, the following average gains are obtained:
 
-- For a 1st order interpolation: 137.7119541688143, 97.15674818809492, 185.7843283662372
+For a 1st order interpolation: 137.7119541688143, 97.15674818809492, 185.7843283662372
 
-- For an interpolation of order 3: 7.608668520339034, 3.1395029764283313,4.496461973620286
+For an interpolation of order 3: 7.608668520339034, 3.1395029764283313,4.496461973620286
 
 Then we can see that the gain is considerable when we use the deep interpolation operator, it is much less when we use the classic interpolation operator.\\
 
