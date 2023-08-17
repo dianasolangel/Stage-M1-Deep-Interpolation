@@ -73,7 +73,7 @@ Finally, I will draw conclusions based on the findings and discuss the implicati
 
 \section{General context}
 
-The intership project was supervised by Emmanuel Franck and Laurent Navoret researchers on the development of numerical methods to solve partial differential equations for the simulation of physical phenomena from the French National Institute for Research in Computer Science and Control (INRIA) which is a leading research institution focused on computer science, applied mathematics, and control theory. 
+The internship project was supervised by Emmanuel Franck and Laurent Navoret researchers on the development of numerical methods to solve partial differential equations for the simulation of physical phenomena from the French National Institute for Research in Computer Science and Control (INRIA) which is a leading research institution focused on computer science, applied mathematics, and control theory. 
 The work is done in collaboration with the INRIA and the French National Centre for Scientific Research (CNRS)
 %DONNER PLUS DE CONTEXTE
 
@@ -149,7 +149,7 @@ Such a procedure is called Semi-Lagrangian because the discrete solution is give
 \subsection{Augmented Interpolation}
 
 \subsubsection{Deep Lagrange Interpolation}
-The deep Lagrange interpolation operator is definded as follows:
+The deep Lagrange interpolation operator is defined as follows:
 \begin{equation*}
     \mathcal{I}_d^m(f)=\sum_{i=1}^n \frac{f\left(x_i\right)}{u_{\theta_i}\left(x_i\right)} P_i(x) u_{\theta_i}(x)
 \end{equation*}
@@ -175,7 +175,7 @@ $$
 u_\theta\left(x ; t, \mu, a(x), a^{\prime}(x)\right)
 $$
 
-We will train these neural networks with a \textbf{Physics Informed Neural Network} strategy and we will use the previous interpolation to approximate the solution of the PDE.
+We will train these neural networks with a \textbf{Physics Informed Neural Network} strategy, and we will use the previous interpolation to approximate the solution of the PDE.
 
 \subsection{Supervised and unsupervised learning}
 
@@ -209,10 +209,10 @@ $$\overline{u_\theta}(X)=W_n\sigma_{n-1}(W_{n-1}\sigma_{n-2}(...(W_2(W_1X+b_1)+b
 %Ajouter plus après
 \subsubsection{Feed-forward Neural Network (FFNN)}
 
-A Feed Forward Neural Network is an artificial neural network in which the connections between nodes does not form a cycle. 
+A Feed Forward Neural Network is an artificial neural network in which the connections between nodes do not form a cycle. 
 The opposite of a feed forward neural network is a recurrent neural network, in which certain pathways are cycled. 
 The feed forward model is the simplest form of neural network as information is only processed in one direction. While the data may pass through multiple hidden nodes, 
-it always moves in one direction and never backwards. In this projetc we will be implementing a FFNN for the PINN.
+it always moves in one direction and never backwards. In this project we will be implementing a FFNN for the PINN.
 
 \subsubsection{Multi Layer Perceptron (MLP)}
 
@@ -259,7 +259,7 @@ Even if neural networks can express very complex functions compactly, determinin
 Physics-informed neural networks (PINNs) are a type of universal function approximators that can embed the knowledge of any physical laws that govern a given data-set in the learning process, and can be described by partial differential equations (PDEs).
 
 They approximate PDE solutions by training a neural network to minimize a loss function; it includes terms reflecting the initial and boundary conditions along the space-time domain’s boundary and the PDE residual at selected points in the domain (called collocation point). 
-they are deep-learning networks that, given an input point in the integration domain, produce an estimated solution in that point of a differential equation after training. Incorporating a residual network that encodes the governing physics equations is a significant novelty with PINNs. 
+They are deep-learning networks that, given an input point in the integration domain, produce an estimated solution in that point of a differential equation after training. Incorporating a residual network that encodes the governing physics equations is a significant novelty with PINNs. 
 
 The basic concept behind PINN training is that it can be thought of as an unsupervised strategy that does not require labelled data, such as results from prior simulations or experiments.
 It works by integrating the mathematical model into the network and reinforcing the loss function with a residual term from the governing equation, which acts as a penalizing term to restrict the space of acceptable solutions.
@@ -304,7 +304,7 @@ There is also the hard approach to address the boundary conditions by incorporat
 
 \subsubsection{The Loss Function}
 
-Using the PINN approach we determine the parameters $\theta$ of the NN, $u_\theta$, by minimizing the loss function:
+Using the PINNs approach we determine the parameters $\theta$ of the NN, $u_\theta$, by minimizing the loss function:
 
 $$
 \theta = argmin_\theta L(\theta)
@@ -316,7 +316,7 @@ $$
 
 \subsubsection*{Data Loss}
 
-The data loss is the mean squared error between the NN output and the validation of known data points, it employs the data points to train the NN, so it's a supervised learning approach.
+The data loss is the mean square error between the NN output and the validation of known data points, it employs the data points to train the NN, so it's a supervised learning approach.
 The NN parameters are chosen by minimizing the difference between the observed outputs and the model’s predictions for the observed inputs.
 $$
 L_{data}(\theta) = \sum_{i=1}^{N} |u_\theta(x_i,t_i) - u_{exact}(x_i,t_i)|^2
@@ -324,8 +324,8 @@ $$
 
 \subsubsection*{Residual Loss}
 
-The residual loss is the mean squared error between the NN output and the PDE residual. The PDE residual is the left-hand side of the PDE, which is computed using the automatic differentiation of the NN.
-It represents the loss produced by the mismatch with the governing physics laws defined by the PDE, it enforce the NN to satisfy the PDE at the collocation points, which can be chosen uniformly or unevenly over the domain
+The residual loss is the mean square error between the NN output and the PDE residual. The PDE residual is the left-hand side of the PDE, which is computed using the automatic differentiation of the NN.
+It represents the loss produced by the mismatch with the governing physics laws defined by the PDE, it enforces the NN to satisfy the PDE at the collocation points, which can be chosen uniformly or unevenly over the domain
 $$
 L_{physics}(\theta) = \sum_{i=1}^{N} |u_\theta(x_i,t_i) - u_{pde}(x_i,t_i)|^2
 $$
@@ -435,7 +435,7 @@ By introducing them as features in the training data set, compared to convention
 
 \subsubsection{Methodology}
 
-In our context t and x represent the time and space domains, we will train a neural network to approximate the solution of the PDE for all the discrtization points in our domain 
+In our context t and x represent the time and space domains, we will train a neural network to approximate the solution of the PDE for all the discretization points in our domain 
 at each time step  by a multilayer feedforward neural network, we can do this by minimizing the error of the PDE in a certain number of points inside our domain.
 
 We are going to represent our neural network by $\overline{u_\theta}$ then we define our initial condition as $u_0$ and our boundary condition as $u_b$ then we define our $u\theta$ as follows:
@@ -453,7 +453,7 @@ It may seem strange to define the partial derivative of a neural network, but si
 using the \textbf{Tanh} activation function, we can derive it using automatic differentiation for any values of $x$ and $t$.
 
 %No se si esta bien 
-We look to minize $\theta$ in order to minimize the error of our neural network, we can do so by using  a stochastic gradient descent-type (SGD) algorithm to optimize the parameter $\theta$ just 
+We look to minimize $\theta$ in order to minimize the error of our neural network, we can do so by using  a stochastic gradient descent-type (SGD) algorithm to optimize the parameter $\theta$ just 
 as the standard training of deep neural networks. In our numerical examples, we use the Adam optimizer.
 
 %the convergence and stability are related to how well the NN learns from physical laws and data.
@@ -507,7 +507,7 @@ The Net class represents a neural network model. It inherits from nn.DataParalle
 Our neural network contains 6 fully connected layers, an input layer that expects four or three input features x, t, mean, and variance/ A according to the initial condition, and five hidden layers, each consisting of fully connected linear units (nn.Linear) followed by the hyperbolic tangent activation function (torch.tanh). The hidden layers progressively reduce the input dimensions and extract higher-level features from the input data, 
 and finally the output layer that consists of a single fully connected linear unit (nn.Linear) without an activation function. It maps the output of hidden layer5 to a single output value.
 
-\subsubsection*{The forward method} Defines the forward pass of the neural network, where the input tensors propagate through the layers in a sequential manner, applying the specified operations and activation functions. The resulting output is returned as the final output of the network.
+\subsubsection*{The forward method} Defines the forward pass of the neural network, where the input tensors propagate through the layers sequentially applying the specified operations and activation functions. The resulting output is returned as the final output of the network.
 
 \subsubsection*{The networkBC method} Serves to impose the hard boundary condition, so when $t=0$ we get that the solution at that time is equal to the initial solution. 
 
@@ -518,7 +518,7 @@ and finally the output layer that consists of a single fully connected linear un
 
     \item \textbf{\_\_call\_\_(*args)}: Calls the network and returns the output.
     
-    \item \textbf{create\_network()}: Creates the neural network model from the prevously defined Net class.
+    \item \textbf{create\_network()}: Creates the neural network model from the previously defined Net class.
     
     \item \textbf{load(file\_name)}: Loads the model from a file. 
     
@@ -649,7 +649,7 @@ With a Gaussian initial condition with mean $\mu = 0.48$ and variance $\sigma^2 
 \end{figure} 
 
 
-We can clearly see that by trainning our NN with collocation points it does not learn quite well all the detail of our solution. 
+We can clearly see that by training our NN with collocation points it does not learn quite well all the detail of our solution. 
 
 \subsubsection{Supervised learning}
 For the supervised approach we trained our NN with 40.000 epochs and 15.000 data points, the best loss we obtained was: \textbf{3.76e-04} \\
@@ -719,29 +719,29 @@ For an initial solution with mean=0.5 and variance = 0.035 we get the following 
 
 \begin{figure}[!h]
     \centering
-    \includegraphics[width=0.5\textwidth]{images/r1.png}
+    \includegraphics[width=0.55\textwidth]{images/r1.png}
     \caption{t=0}
 \end{figure}
 \begin{figure}[!h]
     \centering
-    \includegraphics[width=0.5\textwidth]{images/r2.png}
+    \includegraphics[width=0.55\textwidth]{images/r2.png}
     \caption{t=0.25}
 \end{figure}
 \begin{figure}[!h]
     \centering
-    \includegraphics[width=0.5\textwidth]{images/r3.png}
+    \includegraphics[width=0.55\textwidth]{images/r3.png}
     \caption{t=0.5}
 \end{figure}
 
 \begin{figure}[!h]
     \centering
-    \includegraphics[width=0.5\textwidth]{images/r4.png}
+    \includegraphics[width=0.55\textwidth]{images/r4.png}
     \caption{t=0.75}
 \end{figure}
 
 \begin{figure}[!h]
     \centering
-    \includegraphics[width=0.5\textwidth]{images/r5.png}
+    \includegraphics[width=0.55\textwidth]{images/r5.png}
     \caption{t=1}
 \end{figure} 
 
@@ -750,6 +750,7 @@ For an initial solution with mean=0.5 and variance = 0.035 we get the following 
 \subsubsection*{Error analysis}
 
 For 15.000 data points and different number of epochs the error of the NN is shown in the following table:
+\newpage
 
 \begin{table}[!h]
     \centering
@@ -765,6 +766,7 @@ For 15.000 data points and different number of epochs the error of the NN is sho
     \end{tabular}
     \caption{Error of the NN prediction in for different number of epochs}
     \label{tab:my-table}
+
 \end{table}
 % PREGUNTAR SI ESTA BIEN ESTO
 % For an initial solution defined by the following rectangular function:
@@ -794,7 +796,7 @@ The following results were obtained using the following parameters:
 
 We obtained the following errors calculated in L2 norm compared to the exact solution (in loglog scale) of the transport equation according to the initial condition defined by the Gaussian with the mean and the variance given in parameter at times tf/4 tf /2 and tf (with tf the final time)
 
-\subsection{Interpolation of order 1}
+\subsubsection{Interpolation of order 1}
 
 The \textbf{SL classic} solution is obtained with the Semi-Lagrangian scheme and the classic Lagrange interpolation, \textbf{SL Deep} is calculated using this time the deep interpolation operator and $u_\theta $ as the solution given by the neural network, \textbf{Network} is the solution obtained by the network.\\
 
@@ -822,14 +824,11 @@ The solution \textbf{perturbed SL} is defined as the exact solution to which we 
 
 \begin{figure}[!h]
     \centering
-    \includegraphics[width=0.45\textwidth]{images/10ep11.png}
-    \includegraphics[width=0.45\textwidth]{images/10ep12.png}
-\end{figure}
-\begin{figure}[!h]
-    \centering 
-    \includegraphics[width=0.45\textwidth]{images/10ep13.png}
-    \includegraphics[width=0.45\textwidth]{images/10ep14.png}
-    \includegraphics[width=0.45\textwidth]{images/10ep15.png}
+    \includegraphics[width=0.42\textwidth]{images/10ep11.png}
+    \includegraphics[width=0.42\textwidth]{images/10ep12.png}
+    \includegraphics[width=0.42\textwidth]{images/10ep13.png}
+    \includegraphics[width=0.42\textwidth]{images/10ep14.png}
+    \includegraphics[width=0.42\textwidth]{images/10ep15.png}
     \caption{$nx = 10$}
 \end{figure}
 
@@ -837,35 +836,34 @@ The solution \textbf{perturbed SL} is defined as the exact solution to which we 
     \centering
     \includegraphics[width=0.42\textwidth]{images/20ep11.png}
     \includegraphics[width=0.42\textwidth]{images/20ep12.png}
-    \includegraphics[width=0.42\textwidth]{images/20ep13.png}
 \end{figure}
 
 \begin{figure}[!h]
     \centering
-    \includegraphics[width=0.45\textwidth]{images/20ep13.png}
-    \includegraphics[width=0.45\textwidth]{images/20ep14.png}
-    \includegraphics[width=0.45\textwidth]{images/20ep15.png}
+    \includegraphics[width=0.42\textwidth]{images/20ep13.png}
+    \includegraphics[width=0.42\textwidth]{images/20ep14.png}
+    \includegraphics[width=0.42\textwidth]{images/20ep15.png}
     \caption{$nx = 20$}
 \end{figure}
 
-\newpage
-\begin{figure}[!h]
-    \centering
-    \includegraphics[width=0.4\textwidth]{images/ep11.png}
-    \includegraphics[width=0.4\textwidth]{images/ep12.png}
-    \includegraphics[width=0.4\textwidth]{images/ep13.png}
-\end{figure}
 
 \begin{figure}[!h]
     \centering
+    \includegraphics[width=0.45\textwidth]{images/ep11.png}
+    \includegraphics[width=0.45\textwidth]{images/ep12.png}
     \includegraphics[width=0.45\textwidth]{images/ep13.png}
+\end{figure}
+
+\newpage
+
+\begin{figure}[!h]
+    \centering
     \includegraphics[width=0.45\textwidth]{images/ep14.png}
     \includegraphics[width=0.45\textwidth]{images/ep15.png}
     \caption{$nx = 40$}
 \end{figure}
 
-
-\subsection{Interpolation of order 3}
+\subsubsection{Interpolation of order 3}
 
 The \textbf{SL classic} solution is obtained with the Semi-Lagrangian scheme and the classic Lagrange interpolation, \textbf{SL Deep} is calculated using this time the deep interpolation operator and $u_\theta $ as the solution given by the neural network, \textbf{Network} is the solution obtained by the network.\\
 
@@ -890,14 +888,14 @@ The solution \textbf{perturbed SL} is defined as the exact solution to which we 
 
 \begin{figure}[!h]
     \centering
-    \includegraphics[width=0.45\textwidth]{images/10ep21.png}
-    \includegraphics[width=0.45\textwidth]{images/10ep22.png}
+    \includegraphics[width=0.42\textwidth]{images/10ep21.png}
+    \includegraphics[width=0.42\textwidth]{images/10ep22.png}
 \end{figure}
 \begin{figure}[!h]
     \centering
-    \includegraphics[width=0.45\textwidth]{images/10ep23.png}
-    \includegraphics[width=0.45\textwidth]{images/10ep24.png}
-    \includegraphics[width=0.45\textwidth]{images/10ep25.png}
+    \includegraphics[width=0.42\textwidth]{images/10ep23.png}
+    \includegraphics[width=0.42\textwidth]{images/10ep24.png}
+    \includegraphics[width=0.42\textwidth]{images/10ep25.png}
     \caption{$nx = 10$}
 \end{figure}
 
@@ -910,18 +908,19 @@ The solution \textbf{perturbed SL} is defined as the exact solution to which we 
 
 \begin{figure}[!h]
     \centering
-    \includegraphics[width=0.45\textwidth]{images/20ep24.png}
-    \includegraphics[width=0.45\textwidth]{images/20ep25.png}
+    \includegraphics[width=0.42\textwidth]{images/20ep24.png}
+    \includegraphics[width=0.42\textwidth]{images/20ep25.png}
     \caption{$nx = 20$}
 \end{figure}
 
 \begin{figure}[!h]
     \centering
-    \includegraphics[width=0.45\textwidth]{images/ep21.png}
-    \includegraphics[width=0.45\textwidth]{images/ep22.png}
-    \includegraphics[width=0.45\textwidth]{images/ep23.png}
-    \includegraphics[width=0.45\textwidth]{images/ep24.png}
+    \includegraphics[width=0.42\textwidth]{images/ep21.png}
+    \includegraphics[width=0.42\textwidth]{images/ep22.png}
+    \includegraphics[width=0.42\textwidth]{images/ep23.png}
+    \includegraphics[width=0.42\textwidth]{images/ep24.png}
     \includegraphics[width=0.42\textwidth]{images/ep25.png}
+    \caption{$nx = 40$}
 \end{figure}
 % \begin{figure}[!h]
 %     \centering
@@ -941,11 +940,11 @@ By randomly drawing 20 parameters for the mean and the variance to have differen
 
 By making several draws of 20 parameters, the following average gains are obtained:
 
-For a 1st order interpolation: 137.7119541688143, 97.15674818809492,
+\textbf{For a 1st order interpolation:} 137.7119541688143, 97.15674818809492,
 
 185.7843283662372
 
-For an interpolation of order 3: 7.608668520339034, 3.1395029764283313,
+\textbf{For an interpolation of order 3:} 7.608668520339034, 3.1395029764283313,
 
 4.496461973620286
 
@@ -955,7 +954,11 @@ Then we can see that the gain is considerable when we use the deep interpolation
 
 \section{Conclusions}
 
-We have seen that the deep interpolation operator is much more efficient than the classic interpolation operator, it is also more robust to perturbations.\\
+By implementing the deep Lagrange interpolation operator with the $u_\theta$ solution found using the PINNs startegy in the Semi-Lagrangian scheme for the 1st and 3rd interpolation degree, we have seen that the error is reduced compared to the classic Semi-Lagrangian scheme.\\
+We have also seen that the gain is much more important when we use the deep interpolation operator than when we use the classic interpolation operator.\\
+We were also able to see that the PINNs are able to learn a considerable number of solutions for the advection equation with different initial conditions and
+parameters, which allows us to have a very good approximation of the solution.\\
+
 
 % \bibitem[label]{1} {Scientific Machine Learning Through Physics–Informed Neural Networks: Where we are and What’s Next}
 % Salvatore Cuomo1 · Vincenzo Schiano Di Cola2 · Fabio Giampaolo1 · Gianluigi Rozza3 · Maziar Raissi4 · Francesco Piccialli1
@@ -986,6 +989,8 @@ We have seen that the deep interpolation operator is much more efficient than th
     
     \bibitem{7} \textit{Proceedings of the National Academy of Sciences} (PNAS). (n.d.). Retrieved from \url{https://www.pnas.org/doi/full/10.1073/pnas.1718942115}
     
+    \bibitem{8} Vadyala, S. R., Betgeri, S. N., Betgeri, N. P. (Ph.D). Advection equation using PyTorch. Department of Computational Analysis and Modeling, Louisiana Tech University, Ruston, LA, United States.
+
 \end{thebibliography}
 
 \end{document}
