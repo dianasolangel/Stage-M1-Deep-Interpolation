@@ -1,0 +1,63 @@
+\documentclass{beamer}
+\usepackage{graphicx}
+\usepackage{animate}
+\usepackage{caption}
+\captionsetup{font=footnotesize}
+
+\usetheme{Madrid}
+\usecolortheme{default}
+
+\begin{document}
+
+\title[]{Training augmented interpolation}
+
+\author[FONSECA HINCAPIE Diana Sol Angel]{FONSECA HINCAPIE Diana Sol Angel}
+\date[23 August 2023]{23 August 2023}
+
+\definecolor{uoftblue}{RGB}{6,41,88}
+\setbeamercolor{titlelike}{bg=uoftblue}
+\setbeamerfont{title}{series=\bfseries}
+\begin{frame}
+\titlepage
+\begin{center}
+\includegraphics[width=0.3\textwidth]{images/inria.png}
+\includegraphics[width=0.3\textwidth]{images/cnrslogo.jpeg}
+
+\end{center}
+\end{frame}
+
+\section{Introduction}
+\input{segments/1.1_introduction}
+
+\section{Context of the project}
+\input{segments/2.1_general_context}
+
+\section{Objectives}
+\input{segments/3.1_objectives}
+
+\section{Theorical framework}
+\subsection{Semi Lagrangian Scheme}
+% \input{segments/5.1_SemiLagrangian}
+\input{segments/5.1.1_SemiLagrangian}
+\subsection{Lagrange Interpolation Operators}
+\input{segments/5.2_Lagrange}
+\subsection{$u_{\theta i}$ Function}
+\input{segments/5.3_utheta_function}
+\input{segments/5.4_theorem}
+\subsection{Physics informed neural network}
+\input{segments/5.5_PINNs}
+\input{segments/5.6_PINNs2}
+
+\subsection{Results}
+\input{segments/6.1_Results}
+\input{segments/6.2_Results}
+\input{segments/6.3_Results}
+\input{segments/6.4_Results}
+
+\subsection{Conclusion}
+\input{segments/7.1_Conclusions}
+
+\section{Bibliography}
+\input{segments/8.1_bibliography}
+
+\end{document}
