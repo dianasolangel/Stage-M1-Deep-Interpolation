@@ -14,6 +14,7 @@
 \usepackage{fancyhdr}
 \usepackage{float}
 \usepackage{tabularx}
+\usepackage{subcaption}
 
 \hypersetup{
     colorlinks=true,
@@ -51,7 +52,11 @@
 {\Large M.NAVORET Laurent\par}
 \end{titlepage}
 
-
+\begin{figure}[!h]
+    \centering
+    \includegraphics[width=0.5\textwidth]{images/output.png}
+    \caption{t=0}
+\end{figure}
 %Table of contents
 \maketitle
 \tableofcontents 
@@ -476,7 +481,7 @@ as the standard training of deep neural networks. In our numerical examples, we 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.9\textwidth]{images/loss.jpg}
-    \caption{PINNs}
+    \caption{PINNs | \textbf{Source:} }
 \end{figure}
 
 \subsubsection{Convergence analysis}
@@ -494,16 +499,16 @@ One of the goals for the implementation of the PINN theory is to investigate the
 Our main objective is to implement a solver that based on the Semi-Lagrangian scheme, and implementing the Deep Lagrange interpolation operator 
 using the $u_\theta$ function that will be approximated by a neural network that implements the PINNs strategy will solve the equation (1) for different initial conditions depending on the values of $\mu$ and $\sigma$ for the Gaussian distribution and $A$ for the rectangular function.
 
-\subsection{PINNs code}
+% \subsection{PINNs code}
 
-We implement a Python code to approximate  $u_\theta$ that in our case is equal to the solution of the PDE, by using the PINNs strategy, for this we will be using the library PyTorch for machine learning.
-The aim is to achieve a trained Neural Network that can give the output $u\theta(x, t)$, where x and t are set as inputs that satisfy Eq. (1). 
+% We implement a Python code to approximate  $u_\theta$ that in our case is equal to the solution of the PDE, by using the PINNs strategy, for this we will be using the library PyTorch for machine learning.
+% The aim is to achieve a trained Neural Network that can give the output $u\theta(x, t)$, where x and t are set as inputs that satisfy Eq. (1). 
 
-This PDE has an analytical exact solution which is $u(x,t) = u_0(x,x-at)$, where $u_0$ is the initial condition.
+% This PDE has an analytical exact solution which is $u(x,t) = u_0(x,x-at)$, where $u_0$ is the initial condition.
 
-The fundamental concept is that by performing a forward pass through the network using the independent variables as inputs, we can obtain the corresponding evaluated dependent variables.
-Since PINNs are derivable, we can compute the dependent variables (outputs). The dependent variables (inputs) to calculate the different derivatives that appear in the original PDEs. We create a loss function that fits the PDEs with this derivative throughout the training phase. 
-We will assume that our PINNs solve the PDEs if the loss function approaches a near-zero value, the training can be done in both an unsupervised and supervised setting.\\
+% The fundamental concept is that by performing a forward pass through the network using the independent variables as inputs, we can obtain the corresponding evaluated dependent variables.
+% Since PINNs are derivable, we can compute the dependent variables (outputs). The dependent variables (inputs) to calculate the different derivatives that appear in the original PDEs. We create a loss function that fits the PDEs with this derivative throughout the training phase. 
+% We will assume that our PINNs solve the PDEs if the loss function approaches a near-zero value, the training can be done in both an unsupervised and supervised setting.\\
 
 %NO ES UN BUEN LUGAR ACOMODAR
 % We define the collocation and the data points, each of which would have a separate loss function that will be added together to form the total loss function.
@@ -634,29 +639,31 @@ This means that we will be learning the solution of the transport equation in th
 
 For the unsupervised approach we trained our NN with 40.000 epochs and 50.000 collocation points, the best loss we obtained was: \textbf{3.21e-04} \\
 
-With a Gaussian initial condition with mean $\mu = 0.48$ and variance $\sigma^2 = 0.42$ we get the following approximation made by the network at different time steps:\\
+With a Gaussian initial condition with mean $\mu = 0.49$ and variance $\sigma^2 = 0.4$ we get the following approximation made by the network at different time steps:\\
 \begin{figure}[!h]
     \centering
     \includegraphics[width=0.5\textwidth]{images/nsup1.png}
     \caption{t=0}
-\end{figure}
-\newpage
-\begin{figure}[!h]
-    \centering
+% \end{figure}
+
+% \begin{figure}[!h]
+%     \centering
     \includegraphics[width=0.5\textwidth]{images/nsup2.png}
     \caption{t=0.25}
-\end{figure}
+% \end{figure}
 
-\begin{figure}[!h]
-    \centering
+% \begin{figure}[!h]
+%     \centering
     \includegraphics[width=0.5\textwidth]{images/nsup3.png}
     \caption{t=0.5}
 % \end{figure}
+
 % \begin{figure}[!h]
 %     \centering
     \includegraphics[width=0.5\textwidth]{images/nsup4.png}
     \caption{t=0.75}
 % \end{figure}
+
 % \begin{figure}[!h]
 %     \centering
     \includegraphics[width=0.5\textwidth]{images/nsup5.png}
@@ -665,38 +672,45 @@ With a Gaussian initial condition with mean $\mu = 0.48$ and variance $\sigma^2 
 
 
 We can clearly see that by training our NN with collocation points it does not learn quite well all the detail of our solution. 
+Even if the loss is small like in this case when implementing a PINNs strategy a small loss does not neccesarily equal to a good approximation. 
 
 \subsubsection{Supervised learning}
+
 For the supervised approach we trained our NN with 40.000 epochs and 15.000 data points, the best loss we obtained was: \textbf{3.76e-04} \\
 
-With a Gaussian initial condition with mean $\mu = 0.49$ and variance $\sigma^2 = 0.04$ we get the following approximation made by the network at different time steps:\\
+With a Gaussian initial condition with mean $\mu = 0.48$ and variance $\sigma^2 = 0.042$ we get the following approximation made by the network at different time steps:\\
 
 \begin{figure}[!h]
     \centering
     \includegraphics[width=0.5\textwidth]{images/data1.png}
-    \caption{t=0}
-\end{figure}
+    \subcaption{t=0}
+% \end{figure}
 
-\begin{figure}[!h]
-    \centering
+% \begin{figure}[!h]
+%     \centering
     \includegraphics[width=0.5\textwidth]{images/data2.png}
     \caption{t=0.25}
 % \end{figure}
+
 % \begin{figure}[!h]
 %     \centering
     \includegraphics[width=0.5\textwidth]{images/data3.png}
     \caption{t=0.5}
 % \end{figure}
+
 % \begin{figure}[!h]
 %     \centering
     \includegraphics[width=0.5\textwidth]{images/data4.png}
     \caption{t=0.75}
-% \end{figure}
-% \begin{figure}[!h]
-%     \centering
+\end{figure}
+
+\begin{figure}[!h]
+    \centering
     \includegraphics[width=0.5\textwidth]{images/data5.png}
     \caption{t=1}
 \end{figure} 
+
+\newpage
 
 \subsubsection*{Error analysis}
 
@@ -717,7 +731,9 @@ For 15.000 data points and different number of epochs the error of the NN is sho
     \caption{Error of the NN prediction in for different number of epochs}
     \label{tab:my-table}
 \end{table}
+
 \subsubsection{Supervised and unsupervised learning}
+
 In the following figures we show the results of the PINNs implementation, we will show the results of the unsupervised and supervised learning.\\
 
 The training was done using the following parameters:
@@ -805,148 +821,159 @@ The following results were obtained using the following parameters:
     \item[--] $tf = 1.0$
     \item[--] $nt = 100$
     \item[--] $a = 1$
-    \item[--] $mean = 0.5$
-    \item[--] $variance = 0.035$
+    \item[--] $mean = 0.48$
+    \item[--] $variance = 0.042$
 \end{itemize}
 
-We obtained the following errors calculated in L2 norm compared to the exact solution (in loglog scale) of the transport equation according to the initial condition defined by the Gaussian with the mean and the variance given in parameter at times tf/4 tf /2 and tf (with tf the final time)
+We obtained the following errors calculated in L2 norm compared to the exact solution (in loglog scale) of the transport equation according to the initial condition defined by the Gaussian with the mean and the variance given in parameter at times tf/4 tf /2 and tf (with tf the final time)\\
 
-\subsubsection{Interpolation of order 1}
 
 The \textbf{SL classic} solution is obtained with the Semi-Lagrangian scheme and the classic Lagrange interpolation, \textbf{SL Deep} is calculated using this time the deep interpolation operator and $u_\theta $ as the solution given by the neural network, \textbf{Network} is the solution obtained by the network.\\
 
+\subsubsection{Interpolation of order 1}
+\newpage
+
 \begin{figure}[!h]
     \centering
-    \includegraphics[width=0.45\textwidth]{images/i110.png}
+    \includegraphics[width=0.55\textwidth]{images/i110.png}
     \caption{nx = 10}
 \end{figure}
 
 \begin{figure}[!h]
     \centering
-    \includegraphics[width=0.45\textwidth]{images/i120.png}
+    \includegraphics[width=0.55\textwidth]{images/i120.png}
     \caption{nx = 20}
 \end{figure}
 
 \begin{figure}[!h]
     \centering
-    \includegraphics[width=0.45\textwidth]{images/i1.png}
+    \includegraphics[width=0.55\textwidth]{images/i1.png}
     \caption{nx = 40}
 \end{figure}
 
-\newpage
+The solution \textbf{perturbed SL} is defined as: $u_{exact}(x,t) + \epsilon \cos(x)$ here is what we get when we vary the value of $\epsilon$:\\
 
-The solution \textbf{perturbed SL} is defined as the exact solution to which we add different perturbations $\epsilon + \cos(x)$, here is what we get:\\
-
-\begin{figure}[!h]
-    \centering
-    \includegraphics[width=0.42\textwidth]{images/10ep11.png}
-    \includegraphics[width=0.42\textwidth]{images/10ep12.png}
-    \includegraphics[width=0.42\textwidth]{images/10ep13.png}
-    \includegraphics[width=0.42\textwidth]{images/10ep14.png}
-    \includegraphics[width=0.42\textwidth]{images/10ep15.png}
-    \caption{$nx = 10$}
-\end{figure}
+\subsubsection*{For nx=10}
 
 \begin{figure}[!h]
     \centering
-    \includegraphics[width=0.42\textwidth]{images/20ep11.png}
-    \includegraphics[width=0.42\textwidth]{images/20ep12.png}
-\end{figure}
-
-\begin{figure}[!h]
-    \centering
-    \includegraphics[width=0.42\textwidth]{images/20ep13.png}
-    \includegraphics[width=0.42\textwidth]{images/20ep14.png}
-    \includegraphics[width=0.42\textwidth]{images/20ep15.png}
-    \caption{$nx = 20$}
-\end{figure}
-
-
-\begin{figure}[!h]
-    \centering
-    \includegraphics[width=0.45\textwidth]{images/ep11.png}
-    \includegraphics[width=0.45\textwidth]{images/ep12.png}
-    \includegraphics[width=0.45\textwidth]{images/ep13.png}
+    \includegraphics[width=0.66\textwidth]{images/10ep11.png}
+    \includegraphics[width=0.66\textwidth]{images/10ep12.png}
+    \includegraphics[width=0.66\textwidth]{images/10ep13.png}
 \end{figure}
 
 \newpage
+\begin{figure}[!h]
+    \centering
+    \includegraphics[width=0.66\textwidth]{images/10ep14.png}
+    \includegraphics[width=0.66\textwidth]{images/10ep15.png}
+    % \caption{$nx = 10$}
+\end{figure}
+\subsubsection*{For nx=20}
 
 \begin{figure}[!h]
     \centering
-    \includegraphics[width=0.45\textwidth]{images/ep14.png}
-    \includegraphics[width=0.45\textwidth]{images/ep15.png}
-    \caption{$nx = 40$}
+
+    \includegraphics[width=0.66\textwidth]{images/20ep11.png}
 \end{figure}
 
+\begin{figure}[!h]
+    \centering   
+    \includegraphics[width=0.68\textwidth]{images/20ep12.png}
+
+    \includegraphics[width=0.68\textwidth]{images/20ep13.png}
+
+    \includegraphics[width=0.68\textwidth]{images/20ep14.png}
+\end{figure}
+
+\begin{figure}[!h]
+    \centering
+    \includegraphics[width=0.68\textwidth]{images/20ep15.png}
+    % \caption{$nx = 20$}
+\end{figure}
+\newpage
+
+\subsubsection*{For nx=40}
+
+\begin{figure}[!h]
+    \centering
+    \includegraphics[width=0.66\textwidth]{images/ep11.png}
+    \includegraphics[width=0.66\textwidth]{images/ep12.png}
+\end{figure}
+
+\begin{figure}[!h]
+    \centering
+    \includegraphics[width=0.68\textwidth]{images/ep13.png}
+    \includegraphics[width=0.68\textwidth]{images/ep14.png}
+    \includegraphics[width=0.68\textwidth]{images/ep15.png}
+    % \caption{$nx = 40$}
+\end{figure}
+\newpage
 \subsubsection{Interpolation of order 3}
-
-The \textbf{SL classic} solution is obtained with the Semi-Lagrangian scheme and the classic Lagrange interpolation, \textbf{SL Deep} is calculated using this time the deep interpolation operator and $u_\theta $ as the solution given by the neural network, \textbf{Network} is the solution obtained by the network.\\
-
 \begin{figure}[!h]
     \centering
-    \includegraphics[width=0.45\textwidth]{images/i310.png}
+    \includegraphics[width=0.55\textwidth]{images/i310.png}
     \caption{$nx = 10$}
 \end{figure}
-\newpage 
-
 \begin{figure}[!h]
     \centering
-    \includegraphics[width=0.45\textwidth]{images/i320.png}
+    \includegraphics[width=0.55\textwidth]{images/i320.png}
     \caption{$nx = 20$}
-    \includegraphics[width=0.45\textwidth]{images/i3.png}
+\end{figure}
+\begin{figure}[!h]
+    \centering
+    \includegraphics[width=0.55\textwidth]{images/i3.png}
     \caption{$nx = 40$}
 \end{figure}
 
-% \vspace{4cm}
-
-The solution \textbf{perturbed SL} is defined as the exact solution to which we add different perturbations $\epsilon + \cos(x)$, here is what we get:\\
-
+For the \textbf{perturbed SL} we get the following results:
+\subsubsection*{For nx=10}
 \begin{figure}[!h]
     \centering
-    \includegraphics[width=0.42\textwidth]{images/10ep21.png}
-    \includegraphics[width=0.42\textwidth]{images/10ep22.png}
-\end{figure}
-\begin{figure}[!h]
-    \centering
-    \includegraphics[width=0.42\textwidth]{images/10ep23.png}
-    \includegraphics[width=0.42\textwidth]{images/10ep24.png}
-    \includegraphics[width=0.42\textwidth]{images/10ep25.png}
-    \caption{$nx = 10$}
+    \includegraphics[width=0.68\textwidth]{images/10ep21.png}
+    \includegraphics[width=0.68\textwidth]{images/10ep22.png}
+    \includegraphics[width=0.68\textwidth]{images/10ep23.png}
 \end{figure}
 
 \begin{figure}[!h]
     \centering
-    \includegraphics[width=0.42\textwidth]{images/20ep21.png}
-    \includegraphics[width=0.42\textwidth]{images/20ep22.png}
-    \includegraphics[width=0.42\textwidth]{images/20ep23.png}
+    \includegraphics[width=0.67\textwidth]{images/10ep24.png}
+    \includegraphics[width=0.67\textwidth]{images/10ep25.png}
+\end{figure}
+
+\subsubsection*{For nx=20}
+\begin{figure}[!h]
+    \centering
+    \includegraphics[width=0.67\textwidth]{images/20ep21.png}
 \end{figure}
 
 \begin{figure}[!h]
     \centering
-    \includegraphics[width=0.42\textwidth]{images/20ep24.png}
-    \includegraphics[width=0.42\textwidth]{images/20ep25.png}
-    \caption{$nx = 20$}
+    \includegraphics[width=0.68\textwidth]{images/20ep22.png}
+    \includegraphics[width=0.68\textwidth]{images/20ep23.png}
+    \includegraphics[width=0.68\textwidth]{images/20ep24.png}
 \end{figure}
+
+\newpage
+\begin{figure}[!h]
+    \centering
+    \includegraphics[width=0.67\textwidth]{images/20ep25.png}
+\end{figure}
+\subsubsection*{For nx=40}
+\begin{figure}[!h]
+    \centering
+    \includegraphics[width=0.66\textwidth]{images/ep21.png}
+    \includegraphics[width=0.66\textwidth]{images/ep22.png}
+\end{figure}
+
 
 \begin{figure}[!h]
     \centering
-    \includegraphics[width=0.42\textwidth]{images/ep21.png}
-    \includegraphics[width=0.42\textwidth]{images/ep22.png}
-    \includegraphics[width=0.42\textwidth]{images/ep23.png}
-    \includegraphics[width=0.42\textwidth]{images/ep24.png}
-    \includegraphics[width=0.42\textwidth]{images/ep25.png}
-    \caption{$nx = 40$}
+    \includegraphics[width=0.68\textwidth]{images/ep23.png}
+    \includegraphics[width=0.68\textwidth]{images/ep24.png}
+    \includegraphics[width=0.68\textwidth]{images/ep25.png}
+    % \caption{$nx = 40$}
 \end{figure}
-% \begin{figure}[!h]
-%     \centering
-%     \includegraphics[width=0.42\textwidth]{images/ep25.png}
-%     \caption{$nx = 40$}
-% \end{figure}
-
-
-\newlength{\customspace}
-\setlength{\customspace}{2em}
-\hspace{\customspace} 
 \newpage
 
 \subsection{Average gain}
@@ -961,31 +988,21 @@ By making several draws of 20 parameters, the following average gains are obtain
 
 \textbf{For an interpolation of order 3:} 7.608668520339034, 3.1395029764283313,
 
-4.496461973620286
+4.496461973620286 \\
 
+The gain is considerable when using a first order interpolation but much less important when using the classical third order interpolation.
 
-Then we can see that the gain is considerable when we use the deep interpolation operator, it is much less when we use the classic interpolation operator.\\
-
+\newpage
 
 \section{Conclusions}
 
 By implementing the deep Lagrange interpolation operator with the $u_\theta$ solution found using the PINNs startegy in the Semi-Lagrangian scheme for the 1st and 3rd interpolation degree, we have seen that the error is reduced compared to the classic Semi-Lagrangian scheme.\\
-We have also seen that the gain is much more important when we use the deep interpolation operator than when we use the classic interpolation operator.\\
+We have also seen that the gain is much more important when we use the deep interpolation operator with a first order method than when we use it with the third order one.\\
 We were also able to see that the PINNs are able to learn a considerable number of solutions for the advection equation with different initial conditions and
 parameters, which allows us to have a very good approximation of the solution.\\
 
-
-% \bibitem[label]{1} {Scientific Machine Learning Through Physics–Informed Neural Networks: Where we are and What’s Next}
-% Salvatore Cuomo1 · Vincenzo Schiano Di Cola2 · Fabio Giampaolo1 · Gianluigi Rozza3 · Maziar Raissi4 · Francesco Piccialli1
-% 26 July 2022
-% \bibitem[label]{2} {Supervised vs. Unsupervised Learning: What’s the Difference?} {https://www.ibm.com/cloud/blog/supervised-vs-unsupervised-learning}
-% \bibiitem[label]{3} {What are neural networks?} {https://www.ibm.com/topics/neural-networks}
-
-% \bibiitem[label]{4} {Feed Forward Neural Network} {https://deepai.org/machine-learning-glossary-and-terms/feed-forward-neural-network}
-% \bibiitem[label]{5} {What is a feedforward neural network?} {https://www.ibm.com/cloud/learn/feedforward-neural-network}
-% \bibiitem[label]{6} {Multilayer Perceptron Explained with a Real-Life Example and Python Code} {https://towardsdatascience.com/multilayer-perceptron-explained-with-a-real-life-example-and-python-code-sentiment-analysis-cb408ee93141}
-% \bibiitem[label]{7} {https://www.pnas.org/doi/full/10.1073/pnas.1718942115}
 \newpage
+
 \begin{thebibliography}{9}
 
     \bibitem{1} Cuomo, S., Di Cola, V. S., Giampaolo, F., Rozza, G., Raissi, M., \& Piccialli, F. (2022). Scientific Machine Learning Through Physics–Informed Neural Networks: Where we are and What’s Next. Retrieved July 26, 2022.
