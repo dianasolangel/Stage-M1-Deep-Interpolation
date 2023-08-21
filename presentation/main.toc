@@ -1,0 +1,11 @@
+\beamer@sectionintoc {1}{Introduction}{2}{0}{1}
+\beamer@sectionintoc {2}{Context of the project}{3}{0}{2}
+\beamer@sectionintoc {3}{Objectives}{4}{0}{3}
+\beamer@sectionintoc {4}{Theorical framework}{5}{0}{4}
+\beamer@subsectionintoc {4}{1}{Semi Lagrangian Scheme}{5}{0}{4}
+\beamer@subsectionintoc {4}{2}{Lagrange Interpolation Operators}{6}{0}{4}
+\beamer@subsectionintoc {4}{3}{$u_{\theta i}$ Function}{7}{0}{4}
+\beamer@subsectionintoc {4}{4}{Physics informed neural network}{9}{0}{4}
+\beamer@subsectionintoc {4}{5}{Results}{11}{0}{4}
+\beamer@subsectionintoc {4}{6}{Conclusion}{15}{0}{4}
+\beamer@sectionintoc {5}{Bibliography}{16}{0}{5}
