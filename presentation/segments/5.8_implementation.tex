@@ -1,4 +1,19 @@
 \begin{frame}{Implementation}
+
+    We implemented a solver that based on the Sl scheme, and implementing the Deep Lagrange interpolation operator with the $u_{pred}$ approximated by a  NN  that  implements the  PINNs  strategy 
+    for  different  initial  conditions depending on the values of $\mu$ and $\sigma$.
+    
+    \vspace{0.3cm}
+
+    \begin{itemize}
+        \item \textbf{Neural Network class:} Represents a neural network model.
+        \item \textbf{Network class:} Represents a PINNs model implementing the previous NN class and the Adam optimizer algorithm.
+        \begin{itemize}
+            \item \textbf{Train function:} Optimization step for training a NN by combining  PDE  constraints, data  fitting and boundary conditions, implementing the MSE loss, and a backpropagation step. 
+        \end{itemize}  
+        \item \textbf{Semi-Lagrangian solver:} Implements the SL scheme using the deep interpolation.  
+
+    \end{itemize}
    
      
 \end{frame}
