@@ -1,0 +1,24 @@
+\begin{frame}{Methodology}
+    We have an initial conditions $u_0$:  
+    \begin{align*}
+        u_0 &= \exp\left(-\frac{(x - \mu)^2}{\sigma}\right)
+    \end{align*}
+    \\
+    with $\mu$ the mean and $\sigma$ the variance of the Gaussian distribution.
+    
+    \vspace{0.3cm}
+
+    Using the \textbf{PINNs} approach we determine the parameters $\beta$ of the NN, $u_\theta$:
+    $$
+    u_{pred}(x,t,\beta) = u_0(x) + b_c(x) u_\beta^{NN}(x,t)
+    $$
+    We assume then that:
+    $${u_{pred}}(x,t,\beta)\approx u(x,t)$$ 
+
+    Where the \textbf{Loss function} is defined as:
+    $$
+    L(\beta) = L_{data}(\beta) + L_{physics}(\beta) + L_{SBC}(\beta) + L_{TBC}(\beta)+ L_{IC}(\beta)
+    $$
+
+
+\end{frame}

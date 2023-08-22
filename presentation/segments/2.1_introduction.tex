@@ -1,0 +1,22 @@
+\begin{frame}{Introduction}
+    
+    We are interested in the resolution of transport equations, the aim is to find a way to increase the accuracy of the method using deep learning
+    
+    \vspace{0.3cm}
+
+    \textbf{Advection Equation}
+ 
+    \begin{equation}
+        \begin{cases}
+        \frac{\partial u}{\partial t} + a \frac{\partial u}{\partial x} = 0 \quad (x,t) \in \Omega \times (0,T) \\
+         u(x,t=0) = u_0(x) \quad x \in \delta \Omega \\
+        \end{cases}
+    \end{equation}
+    \\
+
+    Has an analytical solution equal to: 
+    $$
+    u(t, x)=u_0(x, x-at)
+    $$
+    
+\end{frame}

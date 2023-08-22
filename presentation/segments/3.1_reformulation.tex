@@ -1,0 +1,31 @@
+\begin{frame}{The project}
+\textbf{The transport equation:}
+\begin{equation*}
+    \frac{\partial \rho(t,x)}{\partial t} + a \frac{\partial \rho(t,x)}{\partial x} = 0
+\end{equation*}
+    
+\textbf{The semi-Lagrangian method:}
+\begin{equation*}
+    \rho_{i}= \left(\prod \rho\right)(x_{i} - a \Delta t) \quad \forall i
+\end{equation*}
+
+\textbf{The $\prod$ operator of interpolation of Lagrange type:}
+\begin{equation*}
+     \prod \rho(x)= \left(\sum \frac{\rho(x_{i})}{\hat{\rho}(x)} \alpha_i(x)\right) \hat{\rho}(x)
+\end{equation*}   
+
+\textbf{The Deep Lagrange interpolator}
+\begin{equation*}
+\mathcal{I}_d^m(f)=\sum_{i=1}^n \frac{f\left(x_i\right)}{u_{\theta_i}\left(x_i\right)} P_i(x) u_{\theta_i}(x)
+\end{equation*}  
+with $P_i\left(x_j\right)=\delta_{i j}$.
+
+Using this choice, we obtain that $\mathcal{I}_d(f)\left(x_i\right)=f\left(x_i\right)$ as the classical interpolator.
+
+\textbf{Deep Lagrange interpolation with PINNs}
+This is the main objective of the project. We will consider a specific case of the deep interpolation.
+$$
+\mathcal{I}_d^m(f)=\sum^n \frac{f\left(x_i\right)}{u_0\left(x_i\right)} P_i(x) u_\theta(x)=\mathcal{I}^m\left(\frac{f}{u_0}\right) u_\theta(x)
+$$
+
+\end{frame}
