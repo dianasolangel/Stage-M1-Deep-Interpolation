@@ -1,0 +1,24 @@
+\begin{frame}{Lagrange Interpolation Operators}
+    \textbf{The Lagrange interpolation operator:}
+    \begin{equation*}
+        \mathcal{I}_h^m(f)(x)=\sum_{i=1}^m f\left(x_i\right) P_i(x)
+    \end{equation*} 
+    with $P_i\left(x_j\right)=\delta_{i j}$
+
+
+    \textbf{The Deep Lagrange Interpolation:}
+    \begin{equation*}
+        \mathcal{I}_d^m(f)=\sum_{i=1}^n \frac{f\left(x_i\right)}{u_\theta\left(x_i\right)} P_i(x) u_\theta(x)=\mathcal{I}^m\left(\frac{f}{u_\theta}\right) u_\theta(x)
+    \end{equation*}
+
+    With $P_i\left(x_j\right)=\delta_{i j}$
+    Using this choice, we obtain that $\mathcal{I}_d(f)\left(x_i\right)=f\left(x_i\right)$ as the classical interpolator.
+    
+
+    % \textbf{ $u_{\theta i}$ Function:}
+
+    % \begin{equation*}
+    %     u_{\theta_i}(x)= u_0(x + \epsilon -at)
+
+    % \end{equation*}
+\end{frame}
