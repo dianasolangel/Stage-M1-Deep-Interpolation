@@ -2,6 +2,7 @@
 \usepackage{graphicx}
 \usepackage{animate}
 \usepackage{caption}
+\usepackage{subcaption} % For subfigures
 \captionsetup{font=footnotesize}
 
 \usetheme{Madrid}
@@ -20,25 +21,26 @@
 \begin{frame}
 \titlepage
 \begin{center}
-\includegraphics[width=0.3\textwidth]{images/inria.png}
-\includegraphics[width=0.3\textwidth]{images/cnrslogo.jpeg}
+\includegraphics[width=0.2\textwidth]{images/inria.png}
+\includegraphics[width=0.2\textwidth]{images/logo_irma.png}
+\includegraphics[width=0.2\textwidth]{images/logo_unistra.jpg}
 
 \end{center}
 \end{frame}
 
+\section{Objectives}
+\input{segments/1.1_objectives}
+
 \section{Introduction}
-\input{segments/1.1_introduction}
+\input{segments/2.1_introduction}
 
 \section{Context of the project}
-\input{segments/2.1_general_context}
-
-\section{Objectives}
-\input{segments/3.1_objectives}
+\input{segments/3.1_general_context}
 
 \section{Theorical framework}
 \subsection{Semi Lagrangian Scheme}
 % \input{segments/5.1_SemiLagrangian}
-\input{segments/5.1.1_SemiLagrangian}
+\input{segments/5.1_SemiLagrangian}
 \subsection{Lagrange Interpolation Operators}
 \input{segments/5.2_Lagrange}
 \subsection{$u_{\theta i}$ Function}
@@ -47,15 +49,23 @@
 \subsection{Physics informed neural network}
 \input{segments/5.5_PINNs}
 \input{segments/5.6_PINNs2}
+\input{segments/5.7_Methodology}
+\input{segments/5.8_implementation}
 
 \subsection{Results}
 \input{segments/6.1_Results}
-\input{segments/6.2_Results}
+
+\input{segments/6.2_Results_unsup}
+\input{segments/6.2_Results_sup}
+\input{segments/6.2_Results_both}
+
 \input{segments/6.3_Results}
 \input{segments/6.4_Results}
+\input{segments/6.5_other_work_done}
 
 \subsection{Conclusion}
 \input{segments/7.1_Conclusions}
+\input{segments/7.2_Personal_feedback}
 
 \section{Bibliography}
 \input{segments/8.1_bibliography}
