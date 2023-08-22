@@ -28,7 +28,7 @@
 \begin{document}
 \begin{titlepage}
 \begin{figure} 
-\includegraphics[width=0.4\textwidth]{images/inria.png}
+\includegraphics[width=0.45\textwidth]{images/inria.png}
 \includegraphics[width=0.4\textwidth]{images/cnrslogo.jpeg}
     \centering
 \end{figure}
@@ -52,11 +52,6 @@
 {\Large M.NAVORET Laurent\par}
 \end{titlepage}
 
-\begin{figure}[!h]
-    \centering
-    \includegraphics[width=0.5\textwidth]{images/output.png}
-    \caption{t=0}
-\end{figure}
 %Table of contents
 \maketitle
 \tableofcontents 
@@ -69,13 +64,15 @@ We are interested in solving simple transport equations. The goal of work is to 
 For this we implement the Semi-Lagrangian scheme and a simple case of deep interpolation where we approximate the solution of our transport equation by training a physics informed neural network.
 We used a machine learning framework like PyTorch to implement PINNs. 
 
+\newpage
+
 \section{Introduction}
 %Say something about like the importance of the transport equation and the need to solve it numerically and the use of neural networks 
-The focus of my internship was on solving simple transport equations using deep learning techniques, specifically Physics-Informed Neural Networks (PINNs). I will discuss the importance of solving transport equations numerically and the role of neural networks in this process.
+The focus of the internship was on solving simple transport equations using deep learning techniques, specifically Physics-Informed Neural Networks (PINNs).I will start by discussing the importance of solving transport equations numerically and the role of neural networks in this process.
 
-I will provide a theoretical framework for understanding the Semi-Lagrangian scheme with augmented interpolation and PINNs, in the implementation section, I will describe the code developed for the PINNs approach, including the optimization process. I will also provide code snippets and explanations of the most important parts of the code.
+Then, I will provide a theoretical framework for understanding the Semi-Lagrangian scheme with augmented interpolation and PINNs. In the implementation section I will describe the code developed.
 
-In the results section I will present the outcomes of the PINNs implementation, including the results of unsupervised and supervised learning.
+In the results section I will present the outcomes of the PINNs strategy including the results of unsupervised and supervised learning approaches and it's implementation in the Semi-Lagrangian scheme. 
 
 Finally, I will draw conclusions based on the findings and discuss the implications of the work.
 
@@ -170,7 +167,7 @@ Where we interpolate u at time $n+1$ from the n-closest points at time $n$ and o
 \caption{Different interpolation options}
 \end{figure}
 
-Such a procedure is called Semi-Lagrangian because the discrete solution is given on a Eulerian fixed mesh, but on the other hand the scheme relies on the construction of $u\left(t_n, x_j-a \Delta t\right)$ which is used to approximate  $u\left(t_{n+1}, x_j\right)$.
+Such a procedure is called Semi-Lagrangian because the discrete solution is given on an Eulerian fixed mesh, but on the other hand the scheme relies on the construction of $u\left(t_n, x_j-a \Delta t\right)$ which is used to approximate  $u\left(t_{n+1}, x_j\right)$.
 
 \subsection{Augmented Interpolation}
 
@@ -296,7 +293,7 @@ Then we get the following infographic that shows the whole process of a Multilay
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.5\textwidth]{images/MLP2.png}
-    \caption{Multi Layer Perceptron and Backpropagation}
+    \caption{Multi Layer Perceptron and Backpropagation - | \textbf{Source:} Multilayer Perceptron Explained with Real-Life Example and Python}
 \end{figure}
 
 \subsubsection{Activation functions}
@@ -481,7 +478,7 @@ as the standard training of deep neural networks. In our numerical examples, we 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.9\textwidth]{images/loss.jpg}
-    \caption{PINNs | \textbf{Source:} }
+    \caption{PINNs | \textbf{Source:} Youtube video: Introduction to PINNs}
 \end{figure}
 
 \subsubsection{Convergence analysis}
@@ -996,16 +993,15 @@ The gain is considerable when using a first order interpolation but much less im
 
 \section{Conclusions}
 
-By implementing the deep Lagrange interpolation operator with the $u_\theta$ solution found using the PINNs startegy in the Semi-Lagrangian scheme for the 1st and 3rd interpolation degree, we have seen that the error is reduced compared to the classic Semi-Lagrangian scheme.\\
-We have also seen that the gain is much more important when we use the deep interpolation operator with a first order method than when we use it with the third order one.\\
-We were also able to see that the PINNs are able to learn a considerable number of solutions for the advection equation with different initial conditions and
-parameters, which allows us to have a very good approximation of the solution.\\
+By implementing the deep Lagrange interpolation operator alongside the $u_\theta$ solution derived through the PINNs strategy in the Semi-Lagrangian scheme for both the first and third interpolation degrees, the results demonstrate a notable reduction in the error as compared to the classical Semi-Lagrangian approach.\\
+Furthermore, we can see that the degree of improvement is considerably more pronounced when using the deep interpolation operator in with a first-order interpolation, as opposed to the utilization of the third-order one.\\
+Additionally, our observations indicate that the PINNs strategy exhibit a remarkable capacity to assimilate a diverse range of solutions for the advection equation, accommodating varying initial conditions and parameters. This characteristic contributes to a highly accurate approximation of the solution.
 
 \newpage
 
 \begin{thebibliography}{9}
 
-    \bibitem{1} Cuomo, S., Di Cola, V. S., Giampaolo, F., Rozza, G., Raissi, M., \& Piccialli, F. (2022). Scientific Machine Learning Through Physics–Informed Neural Networks: Where we are and What’s Next. Retrieved July 26, 2022.
+    \bibitem{1} Cuomo, S., Di Cola, V. S., Giampaolo, F., Rozza, G., Raissi, M., \& Piccialli, F. (2022). Scientific Machine Learning Through Physics–Informed Neural Networks: Where we are and What’s Next.
     
     \bibitem{2} IBM Cloud Blog. (n.d.). Supervised vs. Unsupervised Learning: What’s the Difference? Retrieved from \url{https://www.ibm.com/cloud/blog/supervised-vs-unsupervised-learning}
     
@@ -1022,7 +1018,8 @@ parameters, which allows us to have a very good approximation of the solution.\\
     \bibitem{7} \textit{Proceedings of the National Academy of Sciences} (PNAS). (n.d.). Retrieved from \url{https://www.pnas.org/doi/full/10.1073/pnas.1718942115}
     
     \bibitem{8} Vadyala, S. R., Betgeri, S. N., Betgeri, N. P. (Ph.D). Advection equation using PyTorch. Department of Computational Analysis and Modeling, Louisiana Tech University, Ruston, LA, United States.
-
+    
+    \bibitem{9} Raissi, M., Perdikaris, P., \& Karniadakis. Physics Informed Deep Learning (Part I): Data-driven Solutions of Nonlinear Partial Differential Equations.
 \end{thebibliography}
 
 \end{document}
